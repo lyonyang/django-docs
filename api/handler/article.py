@@ -6,7 +6,7 @@ from docs import Param, BaseHandler, api_define
 
 class ArticleHandler(BaseHandler):
     @api_define('article_list', '/article/list', [
-    ], '文章列表')
+    ], desc='文章列表')
     def get(self, request):
         return self.write({
             'id': 1,
@@ -15,6 +15,6 @@ class ArticleHandler(BaseHandler):
         })
 
     @api_define('article_add', '/article/add', [
-    ], '文章add')
+    ], desc='文章add')
     def post(self, request):
         return self.write({'code':1})

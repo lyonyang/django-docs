@@ -6,13 +6,14 @@ from functools import wraps
 from docs.handler import Param
 from docs.routers import router
 
-def api_define(name, url, params=[], headers=[], desc=''):
+def api_define(name, url, params=[], headers=[], desc='', display=True):
     """
-    :param name:
-    :param url:
-    :param params:
-    :param desc:
-    :param headers:
+    :param name: api name 即 url() 中的name参数
+    :param url: api url
+    :param params: api 请求需要的参数
+    :param headers: api 请求需要的请求头参数
+    :param desc: api 描述
+    :param display: 是否在文档上显示
     :return:
     """
     if not headers:
@@ -21,7 +22,7 @@ def api_define(name, url, params=[], headers=[], desc=''):
         ]
     def api(view):
         method = view.__name__
-        router.register(view=view, name=name, url=url, params=params, method=method, desc=desc, headers=headers)
+        router.register(view=view, name=name, url=url, params=params, method=method, desc=desc, headers=headers, display=display)
         @wraps(view)
         def handler(*args, **kwargs):
             return view(*args, **kwargs)

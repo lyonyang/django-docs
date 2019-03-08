@@ -25,4 +25,5 @@ urlpatterns = [
 
 urlpatterns += router.urls
 
+print(router.endpoints)
 print(urlpatterns)

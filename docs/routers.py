@@ -63,15 +63,18 @@ class Router(object):
                 params = param['params']
                 headers = param['headers']
                 desc = param['desc']
+                display = param['display']
                 view_name, method = func.__qualname__.split('.')
+                # class
                 view = getattr(m, view_name)
                 if regex.startswith('/'):
                     regex = regex.replace('/', '', 1)
                 pattern = url(r'^%s$' % regex, view.as_view(), name=name)
                 urlpatterns.append(pattern)
-                self.endpoints.append(
-                    ApiEndpoint(pattern=pattern, headers=headers, params=params, name_parent=module, desc=desc)
-                )
+                if display:
+                    self.endpoints.append(
+                        ApiEndpoint(pattern=pattern, headers=headers, params=params, name_parent=module, desc=desc)
+                    )
         return urlpatterns
 
     @property

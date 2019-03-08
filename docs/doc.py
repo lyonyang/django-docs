@@ -19,7 +19,6 @@ class ApiEndpoint(object):
         self.pattern = pattern
         # view 由 as_view return
         self.callback = pattern.callback
-        print(self.callback)
         # self.name = pattern.name
         self.docstring = self.get_doc() or desc
         self.name_parent = name_parent.split('.')[-1]
