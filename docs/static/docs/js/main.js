@@ -203,12 +203,12 @@ function modalShowBefore(event) {
         requestMethodHtml = '<span class="btn btn-sm method options active">OPTIONS</span>'
     } else if (method == "DELETE") {
         titleMethodHtml = title + ' <span class="label label-danger">DELETE</span>';
-        requestMethodHtml = '<span class="btn btn-sm method get active">DELETE</span>'
+        requestMethodHtml = '<span class="btn btn-sm method delete active">DELETE</span>'
     } else if (method == "PATCH") {
-        titleMethodHtml = title + ' <span class="label label-info">PATCH</span>';
+        titleMethodHtml = title + ' <span class="label label-patch">PATCH</span>';
         requestMethodHtml = '<span class="btn btn-sm method patch active">PATCH</span>'
     } else if (method == "PUT") {
-        titleMethodHtml = title + ' <span class="label label-info">PUT</span>';
+        titleMethodHtml = title + ' <span class="label label-put">PUT</span>';
         requestMethodHtml = '<span class="btn btn-sm method put active">PUT</span>'
     }
     $("#titleMethod").html(titleMethodHtml);
@@ -221,8 +221,10 @@ function modalShowBefore(event) {
     $("#Endpoint").val(requestUrl);
     $("#requestHeaders div").remove();
     $("#requestParams div").remove();
-    $("#requestHeaders").append(eachJson(headers_json.data));
-    $("#requestParams").append(eachJson(params_json.data));
+    var method_params = eval('eachJson(params_json.data.' + method + ')');
+    var method_headers = eval('eachJson(headers_json.data.' + method + ')');
+    $("#requestHeaders").append(method_headers);
+    $("#requestParams").append(method_params);
 }
 
 

@@ -25,5 +25,8 @@ urlpatterns = [
 
 urlpatterns += router.urls
 
-print(router.endpoints)
-print(urlpatterns)
+
+# print(router.endpoints)
+# for e in router.endpoints:
+#     print(e.params)
+#     print(e.headers)

@@ -14,9 +14,11 @@ from django.views import View
 
 
 class ApiEndpoint(object):
-    def __init__(self, pattern, headers, params, name_parent, desc=None):
+    def __init__(self, pattern, method, headers, params, name_parent, desc=None):
         # RegexURLPattern
         self.pattern = pattern
+        # http method
+        self.method = method
         # view 由 as_view return
         self.callback = pattern.callback
         # self.name = pattern.name
@@ -27,20 +29,30 @@ class ApiEndpoint(object):
             if alias:
                 self.name_parent = alias
         self.path = self.get_path()
-        self.allowed_methods = self.get_allowed_methods()
+        # self.allowed_methods = self.get_allowed_methods()
+        self.allowed_methods = [force_str(self.method).upper(), ]
         # self.view_name = pattern.callback.__name__
-        self.params = params
-        self.headers = headers
-        self.params_json = self.get_params_json(self.params)
-        self.headers_json = self.get_params_json(self.headers)
+        self.params = {method: params}
+        self.headers = {method: headers}
 
     def __str__(self):
         return self.docstring
 
-    def get_params_json(self, params):
-        data = []
-        for p in params:
-            data.append(p.kwargs)
+    @property
+    def params_json(self):
+        return self.get_params_json(self.params)
+
+    @property
+    def headers_json(self):
+        return self.get_params_json(self.headers)
+
+    def get_params_json(self, param_dict):
+        data = {}
+        for method, params in param_dict.items():
+            tmp = []
+            for p in params:
+                tmp.append(p.kwargs)
+            data[method] = tmp
         return json.dumps({'data': data})
 
     def get_path(self):
