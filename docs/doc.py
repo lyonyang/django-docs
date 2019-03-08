@@ -19,6 +19,7 @@ class ApiEndpoint(object):
         self.pattern = pattern
         # view
         self.callback = pattern.callback
+        print(self.callback)
         # self.name = pattern.name
         self.docstring = self.get_doc() or desc
         self.name_parent = name_parent.split('.')[-1]
@@ -33,6 +34,9 @@ class ApiEndpoint(object):
         self.headers = headers
         self.params_json = self.get_params_json(self.params)
         self.headers_json = self.get_params_json(self.headers)
+
+    def __str__(self):
+        return self.docstring
 
     def get_params_json(self, params):
         data = []

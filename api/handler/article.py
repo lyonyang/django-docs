@@ -4,7 +4,6 @@
 
 from docs import Param, BaseHandler, api_define
 
-
 class ArticleHandler(BaseHandler):
     @api_define('article_list', '/article/list', [
     ], '文章列表')
@@ -14,3 +13,8 @@ class ArticleHandler(BaseHandler):
             'title': 'Django-API文档',
             'content': '这是一个能够让我们写接口更快速的工具~'
         })
+
+    @api_define('article_add', '/article/add', [
+    ], '文章add')
+    def post(self, request):
+        return self.write({'code':1})

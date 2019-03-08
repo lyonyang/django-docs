@@ -70,7 +70,9 @@ class Router(object):
                 pattern = url(r'^%s$' % regex, view.as_view(), name=name)
                 urlpatterns.append(pattern)
                 self.endpoints.append(
-                    ApiEndpoint(pattern=pattern, headers=headers, params=params, name_parent=module, desc=desc))
+                    ApiEndpoint(pattern=pattern, headers=headers, params=params, name_parent=module, desc=desc)
+                )
+        print(urlpatterns)
         return urlpatterns
 
     @property

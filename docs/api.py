@@ -3,25 +3,63 @@
     1. model 与 App存在绑定关系, 必须 Install App 才能使用
     2. 为了使 api 能够自动进行注册路由, 在根目录的文件夹下的 urls.py 中进行自动加载
         - urls.py
-            from docs import router
-            urlpatterns += router.urls
+
+            >>> from django.conf.urls import url, include
+            >>> from django.contrib import admin
+            >>> from docs import router
+            >>> urlpatterns = [
+            >>>    url(r'^docs/', include('docs.urls')),
+            >>> ]
+            >>> urlpatterns += router.urls
+
         - urls.py 为Django自动加载项
         - 通过settings中的 INSTALLED_HANDLERS 设置需要加载的 api
 """
 
+import json
 from functools import wraps
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from docs import router, Param
-from docs.utils.jwt import JwtHandler
+from django.views import View
+from django.shortcuts import HttpResponse
+from django.utils.six.moves.http_client import responses
+from django.core.serializers.json import DjangoJSONEncoder
+
+
+class Param(dict):
+    """
+    Parameters for building API documents.
+    >>> Param('field_name', True, 'type', 'default_value', '备注')
+    """
+
+    def __init__(self, field_name, required, param_type, default='', description=''):
+        """
+        :param field_name: 字段名
+        :param required: 是否必须
+        :param param_type: 参数类型
+        :param default: 默认值
+        :param description: 描述
+        """
+        super(dict, self).__init__()
+        self['field_name'] = field_name
+        self['required'] = required
+        self['param_type'] = param_type
+        self['default'] = default
+        self['description'] = description
+
+    @property
+    def kwargs(self):
+        return {
+            'field_name': self['field_name'],
+            'required': self['required'],
+            'param_type': self['param_type'],
+            'default': self['default'],
+            'description': self['description'],
+        }
 
 
 def api_define(name, url, params=[], desc='', headers=[]):
     if not headers:
         headers = [
             Param('authorization', False, 'str'),
-            Param('channel', True, 'int', '1', '渠道'),
-            Param('organ', True, 'int', '000001', '机构'),
         ]
 
     def foo(view):
@@ -40,77 +78,71 @@ def api_define(name, url, params=[], desc='', headers=[]):
 def login_required(method):
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        user_id = JwtHandler.get_user_id(self.token, self.channel, self.organ)
-        if not user_id:
-            return Response({'code': -1, 'msg': '用户信息已失效, 请重新登录!'})
-        if self.channel == '3':
-            pass
-        from apps.classroom.models.user import User
-        self.user = User.objects.filter(id=user_id).first()
-        self.user_id = self.user.id
+        # TODO 登录校验
         return method(self, *args, **kwargs)
 
     return wrapper
 
 
-class BaseHandler(APIView):
+class Response(HttpResponse):
+    """
+    An HTTP response class that consumes data to be serialized to JSON.
 
-    user = None
-    user_id = None
+    :param data: Data to be dumped into json. By default only ``dict`` objects
+      are allowed to be passed due to a security flaw before EcmaScript 5. See
+      the ``safe`` parameter for more information.
+    :param encoder: Should be an json encoder class. Defaults to
+      ``django.core.serializers.json.DjangoJSONEncoder``.
+    :param json_dumps_params: A dictionary of kwargs passed to json.dumps().
+    """
+
+    def __init__(self, data, status=None, content_type=None, encoder=DjangoJSONEncoder, json_dumps_params=None,
+                 **kwargs):
+        if json_dumps_params is None:
+            json_dumps_params = {}
+        # kwargs.setdefault('content_type', 'application/json')
+        data = json.dumps(data, cls=encoder, **json_dumps_params)
+        super(Response, self).__init__(content=data, content_type=content_type, status=status, **kwargs)
+
+    @property
+    def status_text(self):
+        """
+        Returns reason text corresponding to our HTTP response status code.
+        Provided for convenience.
+        """
+        # TODO: Deprecate and use a template tag instead
+        # TODO: Status code text for RFC 6585 status codes
+        return responses.get(self.status_code, '')
+
+
+class BaseHandler(View):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        """
+        Set `cls' to use `allowed_methods' when building documents.
+        """
+
+        view = super(BaseHandler, cls).as_view(**initkwargs)
+        view.cls = cls
+        view.initkwargs = initkwargs
+        return view
+
+    @property
+    def allowed_methods(self):
+        """
+        Wrap Django's private `_allowed_methods` interface in a public property.
+        """
+        return self._allowed_methods()
+
+    def write(self, data, status=None, content_type=None, encoder=DjangoJSONEncoder, json_dumps_params=None, **kwargs):
+        # status defaults to 200
+        return Response(data=data, status=status, content_type=content_type)
 
     @property
     def ip(self):
-        return self.get_request_ip()
-
-    def get_request_ip(self):
         request = self.request
         if request.META.get('HTTP_X_FORWARDED_FOR'):
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
         return ip
-
-    def get_arg(self, name=None):
-        if hasattr(self.request, self.request.method):
-            args = getattr(self.request, self.request.method)
-            if name is not None:
-                args = args.get(name)
-                if not args:
-                    args = self.request.data.get(name)
-                return args
-        return None
-
-    def files(self, name=None):
-        if name is None:
-            return self.request.FILES
-        return self.request.FILES.get(name)
-
-    def write(self, data=None, status=None, template_name=None, headers=None, exception=False, content_type=None):
-        return Response(data=data, status=status, template_name=template_name, headers=headers, exception=exception,
-                        content_type=content_type)
-
-    def set_user(self, user_id=None):
-        authorization = self.request.META.get('HTTP_AUTHORIZATION') or ' '
-        _, token = authorization.split(' ')
-        user_id = user_id or JwtHandler.get_user_id(token, self.channel, self.organ)
-        if user_id:
-            from apps.classroom.models.user import User
-            user = User.objects.filter(id=user_id).first()
-            self.user_id = user_id
-            self.user = user
-            return True
-        return False
-
-    @property
-    def token(self):
-        authorization = self.request.META.get('HTTP_AUTHORIZATION') or ' '
-        _, token = authorization.split(' ')
-        return token
-
-    @property
-    def channel(self):
-        return self.request.META.get('HTTP_CHANNEL')
-
-    @property
-    def organ(self):
-        return self.request.META.get('HTTP_ORGAN')
