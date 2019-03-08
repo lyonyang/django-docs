@@ -16,27 +16,28 @@
         - 通过settings中的 INSTALLED_HANDLERS 设置需要加载的 api
 """
 
+from __future__ import unicode_literals
+
 import json
-from functools import wraps
+from http.client import responses
 from django.views import View
 from django.shortcuts import HttpResponse
-from django.utils.six.moves.http_client import responses
 from django.core.serializers.json import DjangoJSONEncoder
 
 
 class Param(dict):
     """
     Parameters for building API documents.
-    >>> Param('field_name', True, 'type', 'default_value', '备注')
+    >>> Param('field_name', True, 'type', 'default_value', 'description')
     """
 
     def __init__(self, field_name, required, param_type, default='', description=''):
         """
         :param field_name: 字段名
-        :param required: 是否必须
-        :param param_type: 参数类型
+        :param required: 是否必填
+        :param param_type: 字段值类型, int, str, file
         :param default: 默认值
-        :param description: 描述
+        :param description: 字段值描述
         """
         super(dict, self).__init__()
         self['field_name'] = field_name
@@ -54,34 +55,6 @@ class Param(dict):
             'default': self['default'],
             'description': self['description'],
         }
-
-
-def api_define(name, url, params=[], desc='', headers=[]):
-    if not headers:
-        headers = [
-            Param('authorization', False, 'str'),
-        ]
-
-    def foo(view):
-        method = view.__name__
-        router.register(view=view, name=name, url=url, params=params, method=method, desc=desc, headers=headers)
-
-        @wraps(view)
-        def inner(*args, **kwargs):
-            return view(*args, **kwargs)
-
-        return inner
-
-    return foo
-
-
-def login_required(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        # TODO 登录校验
-        return method(self, *args, **kwargs)
-
-    return wrapper
 
 
 class Response(HttpResponse):
@@ -116,12 +89,15 @@ class Response(HttpResponse):
 
 
 class BaseHandler(View):
+    """
+    Handler for handling HTTP requests.
+    """
+
     @classmethod
     def as_view(cls, **initkwargs):
         """
         Set `cls' to use `allowed_methods' when building documents.
         """
-
         view = super(BaseHandler, cls).as_view(**initkwargs)
         view.cls = cls
         view.initkwargs = initkwargs

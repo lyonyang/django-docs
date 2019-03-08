@@ -15,9 +15,9 @@ from django.views import View
 
 class ApiEndpoint(object):
     def __init__(self, pattern, headers, params, name_parent, desc=None):
-        # RegexURLPattern 对象
+        # RegexURLPattern
         self.pattern = pattern
-        # view
+        # view 由 as_view return
         self.callback = pattern.callback
         print(self.callback)
         # self.name = pattern.name

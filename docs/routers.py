@@ -72,7 +72,6 @@ class Router(object):
                 self.endpoints.append(
                     ApiEndpoint(pattern=pattern, headers=headers, params=params, name_parent=module, desc=desc)
                 )
-        print(urlpatterns)
         return urlpatterns
 
     @property
