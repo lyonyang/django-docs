@@ -16,6 +16,7 @@ def api_define(name, url, params=[], headers=[], desc='', display=True):
     :param display: 是否在文档上显示
     :return:
     """
+    # TODO 校验
     if not headers:
         headers = [
             Param('authorization', False, 'str'),

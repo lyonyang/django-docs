@@ -19,7 +19,7 @@ class ApiEndpoint(object):
         self.pattern = pattern
         # http method
         self.method = method
-        # view 由 as_view return
+        # callback为view, 由as_view return
         self.callback = pattern.callback
         # self.name = pattern.name
         self.docstring = self.get_doc() or desc
@@ -29,14 +29,20 @@ class ApiEndpoint(object):
             if alias:
                 self.name_parent = alias
         self.path = self.get_path()
-        # self.allowed_methods = self.get_allowed_methods()
-        self.allowed_methods = [force_str(self.method).upper(), ]
-        # self.view_name = pattern.callback.__name__
+        self.methods = [self.method, ]
         self.params = {method: params}
         self.headers = {method: headers}
 
     def __str__(self):
         return self.docstring
+
+    @property
+    def allowed_methods(self):
+        sorted_method = []
+        for m in self.callback.cls.http_method_names:
+            if m.upper() in self.methods:
+                sorted_method.append(force_str(m).upper())
+        return sorted_method
 
     @property
     def params_json(self):
@@ -57,15 +63,6 @@ class ApiEndpoint(object):
 
     def get_path(self):
         return simplify_regex(self.pattern.regex.pattern)
-
-    def is_method_allowed(self, callback_cls, method_name):
-        return hasattr(callback_cls, method_name)
-
-    def get_allowed_methods(self):
-        view_methods = [force_str(m).upper()
-                        for m in self.callback.cls.http_method_names
-                        if self.is_method_allowed(self.callback.cls, m)]
-        return sorted(view_methods)
 
     def get_doc(self):
         return inspect.getdoc(self.callback)

@@ -122,8 +122,6 @@ function showFileName(inputEle) {
     var eleDoc = $(inputEle);
     var fileName = eleDoc.val().split('\\').pop();
     eleDoc.parent().parent().next().children().text(fileName);
-    console.log($(inputEle));
-    console.log($(inputEle)[0].files[0])
 }
 
 // 获取参数的html
@@ -210,6 +208,9 @@ function modalShowBefore(event) {
     } else if (method == "PUT") {
         titleMethodHtml = title + ' <span class="label label-put">PUT</span>';
         requestMethodHtml = '<span class="btn btn-sm method put active">PUT</span>'
+    } else if (method == "HEAD") {
+        titleMethodHtml = title + ' <span class="label label-default">HEAD</span>';
+        requestMethodHtml = '<span class="btn btn-sm method default active">HEAD</span>'
     }
     $("#titleMethod").html(titleMethodHtml);
     $("#requestMethod").html(requestMethodHtml);
@@ -275,6 +276,7 @@ function getJsonParams(array) {
 
 
 function ajaxSuccess(data, textStatus, xhr) {
+
     var statusCodeClass = "";
     if (xhr.status >= 100 && xhr.status < 200) {
         statusCodeClass = "status-code-1"
@@ -287,7 +289,13 @@ function ajaxSuccess(data, textStatus, xhr) {
     } else {
         statusCodeClass = "status-code-5"
     }
-    var resultJson = formatJson(data);
+
+    var resultJson = '';
+    if (data) {
+        resultJson = formatJson(data);
+    } else {
+        resultJson = textStatus
+    }
 
     var ele = '<div><h3><span>Response </span><span class="label status-code pull-right ' +
         statusCodeClass +

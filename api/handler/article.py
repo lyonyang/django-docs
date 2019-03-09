@@ -16,15 +16,63 @@ class ArticleHandler(BaseHandler):
             'content': '这是一个能够让我们写接口更快速的工具~'
         })
 
-    @api_define('article_add', '/article/add', [
-        Param('options', True, 'str', '1', 'options')
-    ], desc='文章add')
-    def options(self, request):
-        return self.write({'code': 1})
+    @api_define('article_list', '/article/list', [
+        Param('head', True, 'str', '1', 'get')
+    ], desc='文章列表')
+    def delete(self, request):
+        return self.write({
+            'id': 1,
+            'title': 'Django-API文档',
+            'content': '这是一个能够让我们写接口更快速的工具~'
+        })
+
+    @api_define('article_list', '/article/list', [
+        Param('get', True, 'str', '1', 'get')
+    ], desc='文章列表')
+    def post(self, request):
+        return self.write({
+            'id': 1,
+            'title': 'Django-API文档',
+            'content': '这是一个能够让我们写接口更快速的工具~'
+        })
+
+    @api_define('article_list', '/article/list', [
+        Param('get', True, 'str', '1', 'get')
+    ], desc='文章列表')
+    def put(self, request):
+        return self.write({
+            'id': 1,
+            'title': 'Django-API文档',
+            'content': '这是一个能够让我们写接口更快速的工具~'
+        })
+
+    @api_define('article_list', '/article/list', [
+        Param('get', True, 'str', '1', 'get')
+    ], desc='文章列表')
+    def patch(self, request):
+        return self.write({
+            'id': 1,
+            'title': 'Django-API文档',
+            'content': '这是一个能够让我们写接口更快速的工具~'
+        })
+
+
+    @api_define('article_list', '/article/list', [
+        Param('head', True, 'str', '1', 'get')
+    ], desc='文章列表')
+    def head(self, request):
+        return self.write({
+            'id': 1,
+            'title': 'Django-API文档',
+            'content': '这是一个能够让我们写接口更快速的工具~'
+        })
+
+
 
     @api_define('article_add', '/article/add', [
-        Param('put', True, 'str', '1', 'put')
-    ], desc='文章add')
+        Param('put', True, 'str', '1', 'put'),
+        # 'af'
+    ], desc='添加文章')
     def put(self, request):
         return self.write({'code': 'put'})
 

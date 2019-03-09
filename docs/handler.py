@@ -77,16 +77,6 @@ class Response(HttpResponse):
         data = json.dumps(data, cls=encoder, **json_dumps_params)
         super(Response, self).__init__(content=data, content_type=content_type, status=status, **kwargs)
 
-    @property
-    def status_text(self):
-        """
-        Returns reason text corresponding to our HTTP response status code.
-        Provided for convenience.
-        """
-        # TODO: Deprecate and use a template tag instead
-        # TODO: Status code text for RFC 6585 status codes
-        return responses.get(self.status_code, '')
-
 
 class BaseHandler(View):
     """

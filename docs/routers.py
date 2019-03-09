@@ -7,6 +7,9 @@ import six
 from importlib import import_module
 from django.conf import settings
 from docs.doc import ApiEndpoint
+from docs.handler import Param
+from django.utils.translation import ugettext as _
+from docs.exceptions import HttpMethodError, ParamError
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
@@ -65,8 +68,9 @@ class Router(object):
                 # class
                 view = getattr(m, view_name)
                 if method not in view.http_method_names:
-                    # 不在http_method_names中
-                    raise
+                    # method 不合法
+                    raise HttpMethodError(_('%s is not an HTTP method.' % method))
+
                 method = force_str(method).upper()
                 if regex.startswith('/'):
                     regex = regex.replace('/', '', 1)
@@ -75,19 +79,17 @@ class Router(object):
                 if display:
                     for endpoint in self.endpoints:
                         if endpoint.path == simplify_regex(pattern.regex.pattern):
-                            endpoint.allowed_methods.append(method)
-                            if endpoint.params.get(method):
-                                raise
-                            else:
-                                endpoint.params[method] = params
-                                endpoint.headers[method] = headers
-                            # TODO url相同
+                            endpoint.methods.append(method)
+                            # 如果已经存在则进行覆盖
+                            endpoint.params[method], endpoint.headers[method] = params, headers
                             break
                     else:
-                        self.endpoints.append(
-                            ApiEndpoint(pattern=pattern, method=method, headers=headers, params=params,
-                                        name_parent=module, desc=desc)
-                        )
+                        endpoint = ApiEndpoint(pattern=pattern, method=method, headers=headers, params=params,
+                                               name_parent=module, desc=desc)
+                        if method != "OPTIONS":
+                            endpoint.methods.append("OPTIONS")
+                            endpoint.params["OPTIONS"], endpoint.headers["OPTIONS"] = [], []
+                        self.endpoints.append(endpoint)
         return urlpatterns
 
     @property
