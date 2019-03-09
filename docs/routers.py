@@ -7,9 +7,7 @@ import six
 from importlib import import_module
 from django.conf import settings
 from docs.doc import ApiEndpoint
-from docs.handler import Param
 from django.utils.translation import ugettext as _
-from docs.exceptions import HttpMethodError, ParamError
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
@@ -69,7 +67,7 @@ class Router(object):
                 view = getattr(m, view_name)
                 if method not in view.http_method_names:
                     # method 不合法
-                    raise HttpMethodError(_('%s is not an HTTP method.' % method))
+                    raise type('HttpMethodError', (Exception,), {})(_('%s is not an HTTP method.' % method))
 
                 method = force_str(method).upper()
                 if regex.startswith('/'):

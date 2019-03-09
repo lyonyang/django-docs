@@ -7,7 +7,7 @@ from docs import Param, BaseHandler, api_define
 
 class ArticleHandler(BaseHandler):
     @api_define('article_list', '/article/list', [
-        Param('get', True, 'str', '1', 'get')
+        Param('get', True, 'str', '1', 'get'),
     ], desc='文章列表')
     def get(self, request):
         return self.write({
@@ -19,7 +19,7 @@ class ArticleHandler(BaseHandler):
     @api_define('article_list', '/article/list', [
         Param('head', True, 'str', '1', 'get')
     ], desc='文章列表')
-    def delete(self, request):
+    def ddd(self, request):
         return self.write({
             'id': 1,
             'title': 'Django-API文档',
@@ -66,8 +66,6 @@ class ArticleHandler(BaseHandler):
             'title': 'Django-API文档',
             'content': '这是一个能够让我们写接口更快速的工具~'
         })
-
-
 
     @api_define('article_add', '/article/add', [
         Param('put', True, 'str', '1', 'put'),
