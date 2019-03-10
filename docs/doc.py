@@ -10,7 +10,9 @@ from django.http import Http404
 from django.utils.encoding import force_str
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
+from django.utils.translation import ugettext as _
 from django.views import View
+from docs import settings as docs_settings
 
 
 class ApiEndpoint(object):
@@ -24,10 +26,17 @@ class ApiEndpoint(object):
         # self.name = pattern.name
         self.docstring = self.get_doc() or desc
         self.name_parent = name_parent.split('.')[-1]
-        if hasattr(settings, "INSTALLED_HANDLERS_NAME"):
-            alias = settings.INSTALLED_HANDLERS_NAME.get(name_parent) or None
-            if alias:
-                self.name_parent = alias
+
+        if not hasattr(settings, 'INSTALLED_HANDLERS_NAME'):
+            setattr(settings, 'INSTALLED_HANDLERS_NAME', docs_settings.INSTALLED_HANDLERS_NAME)
+        if not isinstance(settings.INSTALLED_HANDLERS_NAME, dict):
+            raise TypeError(_(
+                'settings INSTALLED_HANDLERS_NAME should be dict not %s' % type(settings.INSTALLED_HANDLERS_NAME)))
+
+        alias = settings.INSTALLED_HANDLERS_NAME.get(name_parent) or None
+        if alias:
+            self.name_parent = alias
+
         self.path = self.get_path()
         self.methods = [self.method, ]
         self.params = {method: params}
@@ -68,31 +77,15 @@ class ApiEndpoint(object):
         return inspect.getdoc(self.callback)
 
 
-class DRFSettings(object):
-    def __init__(self):
-        self.drf_settings = {
-            "HIDE_DOCS": self.get_setting("HIDE_DOCS") or False
-        }
-
-    def get_setting(self, name):
-        try:
-            return settings.REST_FRAMEWORK_DOCS[name]
-        except:
-            return None
-
-    @property
-    def settings(self):
-        return self.drf_settings
-
-
 class DocsView(TemplateView):
     template_name = "docs/home.html"
 
     def get_context_data(self, **kwargs):
         from docs.routers import router
-        settings = DRFSettings().settings
-        if settings["HIDE_DOCS"]:
-            raise Http404("Django Rest Framework Docs are hidden. Check your settings.")
+        if hasattr(settings, 'HIDE_API_DOCS'):
+            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
+        if not settings.HIDE_API_DOCS:
+            raise Http404("API Docs are hidden. Check your settings.")
 
         context = super(DocsView, self).get_context_data(**kwargs)
         endpoints = router.endpoints
@@ -119,10 +112,10 @@ class LoginDocsView(View):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username == 'admin' and password == 'lyondjangoapi':
+        if username == 'admin' and password == 'docs':
             request.session['user'] = 'admin'
             return redirect('/docs')
-        return render(request, 'docs/login.html', {'error': '用户名或密码错误'})
+        return render(request, 'docs/login.html', {'error': 'Incorrect username or password.'})
 
 
 class LogoutDocsView(View):

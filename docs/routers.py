@@ -7,6 +7,7 @@ import six
 from importlib import import_module
 from django.conf import settings
 from docs.doc import ApiEndpoint
+from docs import settings as docs_settings
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.admindocs.views import simplify_regex
@@ -53,7 +54,12 @@ class Router(object):
         from django.conf.urls import url
         # 注册api与路由
         if not hasattr(settings, 'INSTALLED_HANDLERS'):
-            raise ImproperlyConfigured("The INSTALLED_HANDLERS setting must not be empty.")
+            setattr(settings, 'INSTALLED_HANDLERS', docs_settings.INSTALLED_HANDLERS)
+
+        if not isinstance(settings.INSTALLED_HANDLERS, list):
+            raise TypeError(_(
+                'settings INSTALLED_HANDLERS should be list not %s' % type(settings.INSTALLED_HANDLERS)))
+
         for api in settings.INSTALLED_HANDLERS:
             import_string(api + '.__name__')
         urlpatterns = []

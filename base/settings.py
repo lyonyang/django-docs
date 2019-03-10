@@ -172,7 +172,6 @@ INSTALLED_HANDLERS = [
 ]
 
 # Docs 文档中的别名
-INSTALLED_HANDLERS_NAME = {
-    'api.handler.article': '文章相关API',
-
-}
+# INSTALLED_HANDLERS_NAME = {
+#     'api.handler.article': '文章相关API',
+# }

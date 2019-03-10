@@ -19,7 +19,7 @@ class ArticleHandler(BaseHandler):
     @api_define('article_list', '/article/list', [
         Param('head', True, 'str', '1', 'get')
     ], desc='文章列表')
-    def ddd(self, request):
+    def delete(self, request):
         return self.write({
             'id': 1,
             'title': 'Django-API文档',
