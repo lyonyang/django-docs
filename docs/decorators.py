@@ -3,7 +3,7 @@
 # __author__ = "lyon"
 
 """
-文件中不能导入使用全局导入 app 中的 model, 因为 app docs 是第一被加载的且必须为第一加载项 :
+docs 中不能导入使用全局导入 app 中的 model, 因为 app docs 是第一被加载的且必须为第一加载项 :
     1. model 与 App存在绑定关系, 必须 Install App 才能使用
     2. 为了使 api 能够自动进行注册路由, 在根目录的文件夹下的 urls.py 中进行自动加载
         - urls.py
