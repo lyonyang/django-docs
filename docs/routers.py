@@ -6,12 +6,11 @@ import sys
 import six
 from importlib import import_module
 from django.conf import settings
-from docs.doc import ApiEndpoint
-from docs import settings as docs_settings
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ImproperlyConfigured
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
+from docs.base import ApiEndpoint
+from docs import settings as docs_settings
 
 
 def import_string(dotted_path):
@@ -91,8 +90,9 @@ class Router(object):
                         endpoint = ApiEndpoint(pattern=pattern, method=method, headers=headers, params=params,
                                                name_parent=module, desc=desc)
                         if method != "OPTIONS":
+                            from docs.decorators import DEFAULT_HEADERS, DEFAULT_PARAMS
                             endpoint.methods.append("OPTIONS")
-                            endpoint.params["OPTIONS"], endpoint.headers["OPTIONS"] = [], []
+                            endpoint.params["OPTIONS"], endpoint.headers["OPTIONS"] = DEFAULT_PARAMS, DEFAULT_HEADERS
                         self.endpoints.append(endpoint)
         return urlpatterns
 

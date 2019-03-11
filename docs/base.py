@@ -6,12 +6,7 @@ import inspect
 import json
 from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
-from django.http import Http404
-from django.utils.encoding import force_str
-from django.views.generic.base import TemplateView
-from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
-from django.views import View
 from docs import settings as docs_settings
 
 
@@ -47,11 +42,11 @@ class ApiEndpoint(object):
 
     @property
     def allowed_methods(self):
-        sorted_method = []
-        for m in self.callback.cls.http_method_names:
-            if m.upper() in self.methods:
-                sorted_method.append(force_str(m).upper())
-        return sorted_method
+        methods = []
+        for m in self.callback.cls.force_http_method_names():
+            if m in self.methods:
+                methods.append(m)
+        return methods
 
     @property
     def params_json(self):
@@ -77,49 +72,33 @@ class ApiEndpoint(object):
         return inspect.getdoc(self.callback)
 
 
-class DocsView(TemplateView):
-    template_name = "docs/home.html"
+class Param(dict):
+    """
+    Parameters for building API documents.
+    >>> Param('field_name', True, 'type', 'default_value', 'description')
+    """
 
-    def get_context_data(self, **kwargs):
-        from docs.routers import router
-        if not hasattr(settings, 'HIDE_API_DOCS'):
-            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
-        if not settings.HIDE_API_DOCS:
-            raise Http404("API Docs are hidden. Check your settings.")
+    def __init__(self, field_name, required, param_type, default='', description=''):
+        """
+        :param field_name: 字段名
+        :param required: 是否必填
+        :param param_type: 字段值类型, int, str, file
+        :param default: 默认值
+        :param description: 字段值描述
+        """
+        super(dict, self).__init__()
+        self['field_name'] = field_name
+        self['required'] = required
+        self['param_type'] = param_type
+        self['default'] = default
+        self['description'] = description
 
-        context = super(DocsView, self).get_context_data(**kwargs)
-        endpoints = router.endpoints
-
-        query = self.request.GET.get("search", "")
-        if query and endpoints:
-            endpoints = [endpoint for endpoint in endpoints if query in endpoint.path]
-
-        context['query'] = query
-        context['endpoints'] = endpoints
-        return context
-
-    def get(self, request, *args, **kwargs):
-        if not request.session.get('user'):
-            return redirect('/docs/login')
-        context = self.get_context_data(**kwargs)
-        return self.render_to_response(context)
-
-
-class LoginDocsView(View):
-    def get(self, request):
-        return render(request, 'docs/login.html')
-
-    def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if username == 'admin' and password == 'docs':
-            request.session['user'] = 'admin'
-            return redirect('/docs')
-        return render(request, 'docs/login.html', {'error': 'Incorrect username or password.'})
-
-
-class LogoutDocsView(View):
-    def get(self, request):
-        if request.session.get('user'):
-            del request.session['user']
-        return redirect("/docs/login/")
+    @property
+    def kwargs(self):
+        return {
+            'field_name': self['field_name'],
+            'required': self['required'],
+            'param_type': self['param_type'],
+            'default': self['default'],
+            'description': self['description'],
+        }

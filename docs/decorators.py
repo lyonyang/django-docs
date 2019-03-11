@@ -2,13 +2,37 @@
 # -*- coding:utf-8 -*-
 # __author__ = "lyon"
 
+"""
+文件中不能导入使用全局导入 app 中的 model, 因为 app docs 是第一被加载的且必须为第一加载项 :
+    1. model 与 App存在绑定关系, 必须 Install App 才能使用
+    2. 为了使 api 能够自动进行注册路由, 在根目录的文件夹下的 urls.py 中进行自动加载
+        - urls.py
+
+            >>> from django.conf.urls import url, include
+            >>> from django.contrib import admin
+            >>> from docs import router
+            >>> urlpatterns = [
+            >>>    url(r'^docs/', include('docs.urls')),
+            >>> ]
+            >>> urlpatterns += router.urls
+
+        - urls.py 为Django自动加载项
+        - 通过settings中的 INSTALLED_HANDLERS 设置需要加载的 api
+"""
+
 from functools import wraps
-from docs.handler import Param
-from docs.routers import router
 from django.utils.translation import ugettext as _
+from docs.routers import router
+from docs.base import Param
+
+DEFAULT_HEADERS = [
+    Param('authorization', False, 'str', ''),
+]
+
+DEFAULT_PARAMS = []
 
 
-def api_define(name, url, params=[], headers=[], desc='', display=True):
+def api_define(name, url, params=DEFAULT_PARAMS, headers=DEFAULT_HEADERS, desc='', display=True):
     """
     :param name: api name 即 url() 中的name参数
     :param url: api url
@@ -28,11 +52,6 @@ def api_define(name, url, params=[], headers=[], desc='', display=True):
     for h in headers:
         if not isinstance(h, Param):
             raise TypeError(_('api headers %s should be a Param object not %s.' % (h, type(h).__name__)))
-
-    if not headers:
-        headers = [
-            Param('authorization', False, 'str'),
-        ]
 
     def decorator(view):
         method = view.__name__

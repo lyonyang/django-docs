@@ -1,60 +1,14 @@
-"""
-该文件中不能导入使用全局导入 app 中的 model, 因为 app docs 是第一被加载的且必须为第一加载项 :
-    1. model 与 App存在绑定关系, 必须 Install App 才能使用
-    2. 为了使 api 能够自动进行注册路由, 在根目录的文件夹下的 urls.py 中进行自动加载
-        - urls.py
-
-            >>> from django.conf.urls import url, include
-            >>> from django.contrib import admin
-            >>> from docs import router
-            >>> urlpatterns = [
-            >>>    url(r'^docs/', include('docs.urls')),
-            >>> ]
-            >>> urlpatterns += router.urls
-
-        - urls.py 为Django自动加载项
-        - 通过settings中的 INSTALLED_HANDLERS 设置需要加载的 api
-"""
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# __author__ = "lyon"
 
 from __future__ import unicode_literals
 
 import json
-from http.client import responses
 from django.views import View
 from django.shortcuts import HttpResponse
+from django.utils.encoding import force_str
 from django.core.serializers.json import DjangoJSONEncoder
-
-
-class Param(dict):
-    """
-    Parameters for building API documents.
-    >>> Param('field_name', True, 'type', 'default_value', 'description')
-    """
-
-    def __init__(self, field_name, required, param_type, default='', description=''):
-        """
-        :param field_name: 字段名
-        :param required: 是否必填
-        :param param_type: 字段值类型, int, str, file
-        :param default: 默认值
-        :param description: 字段值描述
-        """
-        super(dict, self).__init__()
-        self['field_name'] = field_name
-        self['required'] = required
-        self['param_type'] = param_type
-        self['default'] = default
-        self['description'] = description
-
-    @property
-    def kwargs(self):
-        return {
-            'field_name': self['field_name'],
-            'required': self['required'],
-            'param_type': self['param_type'],
-            'default': self['default'],
-            'description': self['description'],
-        }
 
 
 class Response(HttpResponse):
@@ -100,6 +54,13 @@ class BaseHandler(View):
         """
         return self._allowed_methods()
 
+    @classmethod
+    def force_http_method_names(cls):
+        """
+        Return upper http methods name.
+        """
+        return [force_str(m).upper() for m in cls.http_method_names]
+
     def write(self, data, status=None, content_type=None, encoder=DjangoJSONEncoder, json_dumps_params=None, **kwargs):
         # status defaults to 200
         return Response(data=data, status=status, content_type=content_type)
@@ -112,3 +73,22 @@ class BaseHandler(View):
         else:
             ip = request.META['REMOTE_ADDR']
         return ip
+
+    def options(self, request, *args, **kwargs):
+        """
+        Handles responding to requests for the OPTIONS HTTP verb.
+        """
+        return_data = {
+            "name": "",
+            "description": "",
+            "renders": [
+                "application/json",
+                "text/html"
+            ],
+            "parses": [
+                "application/json",
+                "application/x-www-form-urlencoded",
+                "multipart/form-data"
+            ]
+        }
+        return self.write({'return_code': 'success', 'return_data': return_data})

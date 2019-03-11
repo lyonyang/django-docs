@@ -122,9 +122,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 
-# JWT token secret key
-TOKEN_SECRET_KEY = '8i-!yfmt+hk@-$e7%wl2hx#!v7+rjdc%s8udl0a_*um0l)++y%'
-
 
 # https://docs.djangoproject.com/en/1.11/topics/logging/
 # Django logging
@@ -158,12 +155,8 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'Pragma',
-    'channel',
-    'organ',
 )
 
-# md5
-MD5_SECRET_KEY = '8i-!yfmt+hk@-$e7%wl2hx#!v7+rjdc%s8udl0a_*um0l)++y%'
 
 
 # Docs 配置 Install api handler

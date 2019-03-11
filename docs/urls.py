@@ -10,7 +10,7 @@ API 文档URLS :
 
 from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
-from docs.doc import DocsView, LoginDocsView, LogoutDocsView
+from docs.view import DocsView, LoginDocsView, LogoutDocsView
 
 urlpatterns = [
     url(r'^$', csrf_exempt(DocsView.as_view())),
