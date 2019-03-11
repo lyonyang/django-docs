@@ -27,7 +27,7 @@ class ArticleHandler(BaseHandler):
         })
 
     @api_define('article_list', '/article/list', [
-        Param('get', True, 'str', '1', 'get')
+        Param('get', True, 'str', '1', '这个字段1:标识阿豪, 0标识不好中文')
     ], desc='文章列表')
     def post(self, request):
         return self.write({

@@ -82,7 +82,7 @@ class DocsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         from docs.routers import router
-        if hasattr(settings, 'HIDE_API_DOCS'):
+        if not hasattr(settings, 'HIDE_API_DOCS'):
             setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
         if not settings.HIDE_API_DOCS:
             raise Http404("API Docs are hidden. Check your settings.")
