@@ -66,6 +66,13 @@ class BaseHandler(View):
         return Response(data=data, status=status, content_type=content_type)
 
     @property
+    def data(self):
+        """
+        Return `request.METHOD`.
+        """
+        return getattr(self.request, self.request.method)
+
+    @property
     def ip(self):
         request = self.request
         if request.META.get('HTTP_X_FORWARDED_FOR'):
