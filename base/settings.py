@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'docs',
     'apps.articles',
 ]
@@ -127,44 +126,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # Django logging
 
 
-# Cors 配置
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    '*'
-)
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'VIEW',
-)
+# Docs settings
 
-CORS_ALLOW_HEADERS = (
-    'XMLHttpRequest',
-    'X_FILENAME',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'Pragma',
-)
-
-
-
-# Docs 配置 Install api handler
 INSTALLED_HANDLERS = [
     'api.handler.article',
 ]
 
-# Docs 文档中的别名
-# INSTALLED_HANDLERS_NAME = {
-#     'api.handler.article': '文章相关API',
-# }
