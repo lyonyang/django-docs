@@ -19,7 +19,6 @@ from docs import router
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^docs/', include('docs.urls')),
 ]
 

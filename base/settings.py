@@ -81,7 +81,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -120,8 +119,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-
-
 # https://docs.djangoproject.com/en/1.11/topics/logging/
 # Django logging
 
@@ -130,4 +127,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 INSTALLED_HANDLERS = [
     'api.handler.article',
+]
+
+DEFAULT_HEADERS = [
+    ('authorization', False, 'str', '', 'Token'),
 ]

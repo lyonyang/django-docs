@@ -10,7 +10,6 @@ from django.utils.translation import ugettext as _
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
 from docs.base import ApiEndpoint
-from docs import settings as docs_settings
 from docs.checks import params_check
 
 
@@ -91,8 +90,8 @@ class Router(object):
                             if method != "OPTIONS":
                                 endpoint.methods.append("OPTIONS")
                                 endpoint.params["OPTIONS"], endpoint.headers[
-                                    "OPTIONS"] = params_check(docs_settings.DEFAULT_PARAMS), params_check(
-                                    docs_settings.DEFAULT_HEADERS)
+                                    "OPTIONS"] = params_check(settings.DEFAULT_PARAMS), params_check(
+                                    settings.DEFAULT_HEADERS)
                         self.endpoints.append(endpoint)
         return urlpatterns
 

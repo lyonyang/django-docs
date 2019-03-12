@@ -21,12 +21,12 @@ docs 中不能导入使用全局导入 app 中的 model, 因为 app docs 是第�
 """
 
 from functools import wraps
+from django.conf import settings
 from docs.routers import router
 from docs.checks import params_check
-from docs import settings as docs_settings
 
 
-def api_define(name, url, params=docs_settings.DEFAULT_PARAMS, headers=docs_settings.DEFAULT_HEADERS, desc='',
+def api_define(name, url, params=None, headers=None, desc='',
                display=True):
     """
     :param name: api name 即 url() 中的name参数
@@ -38,9 +38,18 @@ def api_define(name, url, params=docs_settings.DEFAULT_PARAMS, headers=docs_sett
     :return:
     """
 
+    params_list = list(settings.DEFAULT_PARAMS)
+    if params is not None:
+        params_list.extend(list(params))
+
+    headers_list = list(settings.DEFAULT_HEADERS)
+    if headers is not None:
+        headers_list.extend(list(headers))
+
     def decorator(view):
         method = view.__name__
-        router.register(view=view, name=name, url=url, params=params_check(params), headers=params_check(headers),
+        router.register(view=view, name=name, url=url, params=params_check(params_list),
+                        headers=params_check(headers_list),
                         desc=desc, method=method,
                         display=display)
 

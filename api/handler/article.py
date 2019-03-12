@@ -14,7 +14,7 @@ class ArticleList(BaseHandler):
         data = []
         for article in articles:
             data.append(article.data())
-        return self.write({'return_code': 'success', 'return_data': data})
+        return self.write({'return_code': CODE.SUCCESS, 'return_data': data})
 
 
 class ArticleAdd(BaseHandler):

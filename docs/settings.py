@@ -2,20 +2,20 @@
 # -*- coding:utf-8 -*-
 # __author__ = "lyon"
 
+# 注册的api
 INSTALLED_HANDLERS = []
 
+# 注册的api标题别名
 INSTALLED_HANDLERS_NAME = {}
 
 # 是否隐藏文档
 HIDE_API_DOCS = False
 
-# 默认添加options请求方法
+# 自动添加options请求方法
 AUTO_ADD_OPTIONS_METHOD = True
 
-DEFAULT_HEADERS = [
-    ('authorization', False, 'str', ''),
-]
+# 全局headers参数
+DEFAULT_HEADERS = []
 
-DEFAULT_PARAMS = [
-
-]
+# 全局params参数
+DEFAULT_PARAMS = []

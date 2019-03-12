@@ -45,7 +45,7 @@ class LoginDocsView(View):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username == 'admin' and password == 'docs':
+        if username == 'admin' and password == 'admin':
             request.session['user'] = 'admin'
             return redirect('/docs')
         return render(request, 'docs/login.html', {'error': 'Incorrect username or password.'})
