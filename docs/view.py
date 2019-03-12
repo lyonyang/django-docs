@@ -7,7 +7,6 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from django.views import View
 from django.conf import settings
-from docs import settings as docs_settings
 
 
 class DocsView(TemplateView):
@@ -27,8 +26,6 @@ class DocsView(TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if not hasattr(settings, 'HIDE_API_DOCS'):
-            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
         if settings.HIDE_API_DOCS:
             raise Http404("API Docs are hidden. Check your settings.")
 
@@ -40,8 +37,6 @@ class DocsView(TemplateView):
 
 class LoginDocsView(View):
     def get(self, request):
-        if not hasattr(settings, 'HIDE_API_DOCS'):
-            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
         if settings.HIDE_API_DOCS:
             raise Http404("API Docs are hidden. Check your settings.")
 

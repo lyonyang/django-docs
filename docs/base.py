@@ -22,8 +22,6 @@ class ApiEndpoint(object):
         self.docstring = self.get_doc() or desc
         self.name_parent = name_parent.split('.')[-1]
 
-        if not hasattr(settings, 'INSTALLED_HANDLERS_NAME'):
-            setattr(settings, 'INSTALLED_HANDLERS_NAME', docs_settings.INSTALLED_HANDLERS_NAME)
         if not isinstance(settings.INSTALLED_HANDLERS_NAME, dict):
             raise TypeError(_(
                 'settings INSTALLED_HANDLERS_NAME should be dict not %s' % type(settings.INSTALLED_HANDLERS_NAME)))

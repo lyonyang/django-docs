@@ -51,9 +51,6 @@ class Router(object):
         Return a list of URL patterns, given the registered apis.
         """
         from django.conf.urls import url
-        # 注册api与路由
-        if not hasattr(settings, 'INSTALLED_HANDLERS'):
-            setattr(settings, 'INSTALLED_HANDLERS', docs_settings.INSTALLED_HANDLERS)
 
         if not isinstance(settings.INSTALLED_HANDLERS, list):
             raise TypeError(_(
@@ -89,10 +86,12 @@ class Router(object):
                     else:
                         endpoint = ApiEndpoint(pattern=pattern, method=method, headers=headers, params=params,
                                                name_parent=module, desc=desc)
-                        if method != "OPTIONS":
-                            from docs.decorators import DEFAULT_HEADERS, DEFAULT_PARAMS
-                            endpoint.methods.append("OPTIONS")
-                            endpoint.params["OPTIONS"], endpoint.headers["OPTIONS"] = DEFAULT_PARAMS, DEFAULT_HEADERS
+                        if settings.AUTO_ADD_OPTIONS_METHOD:
+                            if method != "OPTIONS":
+                                from docs.decorators import DEFAULT_HEADERS, DEFAULT_PARAMS
+                                endpoint.methods.append("OPTIONS")
+                                endpoint.params["OPTIONS"], endpoint.headers[
+                                    "OPTIONS"] = DEFAULT_PARAMS, DEFAULT_HEADERS
                         self.endpoints.append(endpoint)
         return urlpatterns
 
