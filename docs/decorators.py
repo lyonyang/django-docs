@@ -21,18 +21,13 @@ docs 中不能导入使用全局导入 app 中的 model, 因为 app docs 是第�
 """
 
 from functools import wraps
-from django.utils.translation import ugettext as _
 from docs.routers import router
-from docs.base import Param
-
-DEFAULT_HEADERS = [
-    Param('authorization', False, 'str', ''),
-]
-
-DEFAULT_PARAMS = []
+from docs.checks import params_check
+from docs import settings as docs_settings
 
 
-def api_define(name, url, params=DEFAULT_PARAMS, headers=DEFAULT_HEADERS, desc='', display=True):
+def api_define(name, url, params=docs_settings.DEFAULT_PARAMS, headers=docs_settings.DEFAULT_HEADERS, desc='',
+               display=True):
     """
     :param name: api name 即 url() 中的name参数
     :param url: api url
@@ -42,20 +37,11 @@ def api_define(name, url, params=DEFAULT_PARAMS, headers=DEFAULT_HEADERS, desc='
     :param display: 是否在文档上显示
     :return:
     """
-    if not isinstance(params, list):
-        raise TypeError(_('params type must be a list not %s.' % type(params)))
-    if not isinstance(headers, list):
-        raise TypeError(_('headers type must be a list not %s.' % type(headers)))
-    for p in params:
-        if not isinstance(p, Param):
-            raise TypeError(_('api params %s should be a Param object not %s.' % (p, type(p).__name__)))
-    for h in headers:
-        if not isinstance(h, Param):
-            raise TypeError(_('api headers %s should be a Param object not %s.' % (h, type(h).__name__)))
 
     def decorator(view):
         method = view.__name__
-        router.register(view=view, name=name, url=url, params=params, method=method, desc=desc, headers=headers,
+        router.register(view=view, name=name, url=url, params=params_check(params), headers=params_check(headers),
+                        desc=desc, method=method,
                         display=display)
 
         @wraps(view)

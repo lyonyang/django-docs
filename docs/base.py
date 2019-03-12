@@ -7,7 +7,6 @@ import json
 from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.translation import ugettext as _
-from docs import settings as docs_settings
 
 
 class ApiEndpoint(object):

@@ -11,6 +11,7 @@ from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
 from docs.base import ApiEndpoint
 from docs import settings as docs_settings
+from docs.checks import params_check
 
 
 def import_string(dotted_path):
@@ -52,7 +53,7 @@ class Router(object):
         """
         from django.conf.urls import url
 
-        if not isinstance(settings.INSTALLED_HANDLERS, list):
+        if not isinstance(settings.INSTALLED_HANDLERS, (list, tuple)):
             raise TypeError(_(
                 'settings INSTALLED_HANDLERS should be list not %s' % type(settings.INSTALLED_HANDLERS)))
 
@@ -88,10 +89,10 @@ class Router(object):
                                                name_parent=module, desc=desc)
                         if settings.AUTO_ADD_OPTIONS_METHOD:
                             if method != "OPTIONS":
-                                from docs.decorators import DEFAULT_HEADERS, DEFAULT_PARAMS
                                 endpoint.methods.append("OPTIONS")
                                 endpoint.params["OPTIONS"], endpoint.headers[
-                                    "OPTIONS"] = DEFAULT_PARAMS, DEFAULT_HEADERS
+                                    "OPTIONS"] = params_check(docs_settings.DEFAULT_PARAMS), params_check(
+                                    docs_settings.DEFAULT_HEADERS)
                         self.endpoints.append(endpoint)
         return urlpatterns
 
