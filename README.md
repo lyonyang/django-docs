@@ -6,6 +6,8 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
 ## 使用方法
 
+你可以直接fork本项目代码, 通过 `python manage.py runserver` 命令来进行测试使用.
+
 ### API
 
 这是一个 `API` 的示例:
