@@ -15,11 +15,6 @@ class DocsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         from docs.routers import router
-        if not hasattr(settings, 'HIDE_API_DOCS'):
-            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
-        if not settings.HIDE_API_DOCS:
-            raise Http404("API Docs are hidden. Check your settings.")
-
         context = super(DocsView, self).get_context_data(**kwargs)
         endpoints = router.endpoints
 
@@ -32,6 +27,11 @@ class DocsView(TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        if not hasattr(settings, 'HIDE_API_DOCS'):
+            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
+        if settings.HIDE_API_DOCS:
+            raise Http404("API Docs are hidden. Check your settings.")
+
         if not request.session.get('user'):
             return redirect('/docs/login')
         context = self.get_context_data(**kwargs)
@@ -40,6 +40,11 @@ class DocsView(TemplateView):
 
 class LoginDocsView(View):
     def get(self, request):
+        if not hasattr(settings, 'HIDE_API_DOCS'):
+            setattr(settings, 'HIDE_API_DOCS', docs_settings.HIDE_API_DOCS)
+        if settings.HIDE_API_DOCS:
+            raise Http404("API Docs are hidden. Check your settings.")
+
         return render(request, 'docs/login.html')
 
     def post(self, request):

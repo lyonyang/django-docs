@@ -131,4 +131,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 INSTALLED_HANDLERS = [
     'api.handler.article',
 ]
-
