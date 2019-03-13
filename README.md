@@ -4,6 +4,27 @@
 
 django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
+## 安装
+
+`django-api-docs` 是一个 `Django` 的应用, 所以你可以将 `docs` 目录复制进你的项目中, 随后: 
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'docs',  # or docs.apps.DocsConfig
+    ...  # your apps
+]
+```
+
+将 `docs` 添加进 `INSTALLED_APPS` 这不是必要的, 当你使用 `python manage.py collectstatic` 整合静态文件, 且更换 `docs.templates` 中HTML文件的位置时, 你可以把它当做一个包
+
+将 `docs` 注册进 `INSTALLED_APPS` 主要是为了 `Django` 能够找到我们的静态文件 , 当然还有一点就是, 这样更符合我们的习惯
+
 ## 使用方法
 
 你可以直接fork本项目代码, 通过 `python manage.py runserver` 命令来进行测试使用.
