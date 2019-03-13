@@ -5,7 +5,7 @@ from django.db import models
 
 class Article(models.Model):
     """
-    文章
+    文库
     """
     DELETE_CHOICES = (
         (1, '正常'),

@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.encoding import force_str
 from docs.base import ApiEndpoint
-from docs.checks import params_check
+from docs.checks import params_check, settings_check
 
 
 def import_string(dotted_path):
@@ -51,6 +51,8 @@ class Router(object):
         Return a list of URL patterns, given the registered apis.
         """
         from django.conf.urls import url
+
+        settings_check()
 
         if not isinstance(settings.INSTALLED_HANDLERS, (list, tuple)):
             raise TypeError(_(

@@ -23,7 +23,7 @@ docs 中不能导入使用全局导入 app 中的 model, 因为 app docs 会在�
 from functools import wraps
 from django.conf import settings
 from docs.routers import router
-from docs.checks import params_check
+from docs.checks import params_check, settings_check
 
 
 def api_define(name, url, params=None, headers=None, desc='',
@@ -37,13 +37,8 @@ def api_define(name, url, params=None, headers=None, desc='',
     :param display: 是否在文档上显示
     :return:
     """
-
-    # 如果apps中的ready没有加载, 则重新加载一次
-    if not hasattr(settings, 'DEFAULT_PARAMS'):
-        from docs import settings as docs_settings
-        for i in dir(docs_settings):
-            setting_value = getattr(docs_settings, i)
-            setattr(settings, i, setting_value)
+    # 检查settings, 如果没有就设置
+    settings_check()
 
     params_list = list(settings.DEFAULT_PARAMS)
     if params is not None:

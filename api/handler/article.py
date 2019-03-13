@@ -16,7 +16,6 @@ class ArticleList(BaseHandler):
             data.append(article.data())
         return self.write({'return_code': CODE.SUCCESS, 'return_data': data})
 
-
 class ArticleAdd(BaseHandler):
     @api_define('article_add', '/article/add', [
         Param('title', True, 'str', 'API Docs', '标题'),
