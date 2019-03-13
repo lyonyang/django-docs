@@ -176,7 +176,7 @@ class Article(models.Model):
 
 ```python
 from docs import Param, BaseHandler, api_define
-from apps.articles.models import Article
+from artilces.models import Article
 
 class ArticleList(BaseHandler):
     @api_define('article_list', '/article/list', desc='文章列表')
