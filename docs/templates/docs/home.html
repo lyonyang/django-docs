@@ -77,7 +77,7 @@
         <div class="right-summary">
             <ul>
                 {% for group in endpoints_grouped %}
-                    <li><a href="#{{ group.grouper|lower }}-group">{{ group.grouper }}</a></li>
+                    <li><a href="#{{ group.grouper|lower }}-group">{{ group.grouper|title }}</a></li>
                 {% endfor %}
             </ul>
         </div>
