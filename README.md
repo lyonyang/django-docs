@@ -296,7 +296,7 @@ class ArticleAdd(BaseHandler):
         return self.write({'return_code': 0, 'return_data': {}})
 ```
 
-**方式二: **
+**方式二:**
 
 ```python
 import datetime
