@@ -97,11 +97,11 @@ urlpatterns += router.urls
 
 随后访问 `http://127.0.0.1:8000/docs/login` , 因为我们需要先登录才能看到文档 
 
-![login]([https://github.com/lyonyang/django-api-docs/blob/master/asset/login.png])
+![login]([https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/login.png])
 
 默认用户名和密码均为 `admin` 
 
-![default_docs]([https://github.com/lyonyang/django-api-docs/blob/master/asset/default_docs.png])
+![default_docs]([https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/default_docs.png])
 
 ## 编写API
 
@@ -171,11 +171,11 @@ INSTALLED_HANDLERS = [
 
 重新启动一下我们的项目, 再访问 `http://127.0.0.1:8000/docs` 
 
-![first_api]([https://github.com/lyonyang/django-api-docs/blob/master/asset/first_api.png])
+![first_api]([https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/first_api.png])
 
 我们的第一个接口就这样写好了 , 接下来我们来使用这个文档看看 , 我们来发送 `GET` 请求
 
-![request]([https://github.com/lyonyang/django-api-docs/blob/master/asset/request.png])
+![request]([https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/request.png])
 
 更多说明请看其他文档
 
