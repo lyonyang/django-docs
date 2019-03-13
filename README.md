@@ -139,7 +139,7 @@ urlpatterns += router.urls
 ➜  ~ mkdir api
 ```
 
-接下来我们在 `api` 目录中创建 `article.py` , 编写一个查看文库中所有文件的 API , 在这之前我们先在 Model `Article` 中添加一个方法供我们使用 :
+接下来我们在 `api` 目录中创建 `article.py` , 你也可以像本项目`(django-api-docs)`一样, 在 `api` 目录中再创建一个 `handler` 目录来存放 `API` 文件, 在编写API之前我们先在 Model `Article` 中添加一个方法供我们使用 :
 
 ```python
 # articles.models
@@ -192,7 +192,7 @@ API虽然写好了, 但是我们还需要制定加载这个`api.article.py` , �
 
 ```python
 INSTALLED_HANDLERS = [
-    'api.article',
+    'api.article',  # 本项目 api.handler.article
 ]
 ```
 
@@ -211,7 +211,7 @@ INSTALLED_HANDLERS = [
 
 ```python
 INSTALLED_HANDLERS_NAME = {
-    'api.handler.article': '文章相关API',
+    'api.article': '文章相关API',  # 本项目 api.handler.article
 }
 ```
 
