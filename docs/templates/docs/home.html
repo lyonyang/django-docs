@@ -1,6 +1,5 @@
 {% extends "docs/base.html" %}
 {% load staticfiles %}
-{% load drfdocs_filters %}
 
 {% block apps_menu %}
     {% regroup endpoints by name_parent as endpoints_grouped %}
@@ -9,7 +8,8 @@
            aria-expanded="false">Jump To<span class="caret"></span></a>
         <ul class="dropdown-menu">
             {% for group in endpoints_grouped %}
-                <li><a href="#{{ group.grouper|lower }}-group" style="cursor:pointer;">{{ group.grouper }}</a></li>
+                <li><a href="#{{ group.grouper|lower }}-group" style="cursor:pointer;">{{ group.grouper|title }}</a>
+                </li>
             {% endfor %}
         </ul>
     </li>
