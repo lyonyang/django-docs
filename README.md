@@ -4,6 +4,8 @@
 
 django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
+Django 版本: 1.x
+
 ## 安装
 
 `django-api-docs` 是一个 `Django` 的应用, 所以你可以将 `docs` 目录复制进你的项目中, 随后: 
