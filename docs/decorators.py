@@ -38,6 +38,13 @@ def api_define(name, url, params=None, headers=None, desc='',
     :return:
     """
 
+    # 如果apps中的ready没有加载, 则重新加载一次
+    if not hasattr(settings, 'DEFAULT_PARAMS'):
+        from docs import settings as docs_settings
+        for i in dir(docs_settings):
+            setting_value = getattr(docs_settings, i)
+            setattr(settings, i, setting_value)
+
     params_list = list(settings.DEFAULT_PARAMS)
     if params is not None:
         params_list.extend(list(params))
