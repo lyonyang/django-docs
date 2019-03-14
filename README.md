@@ -1,5 +1,9 @@
 # django-api-docs
 
+![django-version](https://img.shields.io/badge/django%20version-1.x-blue.svg)
+![python-version](https://img.shields.io/badge/python-3.4%2C%203.5%2C%203.6-blue.svg)
+![django-api-docs](https://img.shields.io/badge/django--api--docs-0.1.0-blue.svg)
+
 ## 简介
 
 django-api-docs 是一个用于构建Web API的工具:palm_tree:
@@ -248,7 +252,7 @@ class ArticleAdd(BaseHandler):
 
 ```python
 INSTALLED_HANDLERS_NAME = {
-    'api.article': '文章相关API',  # 本项目 api.handler.article
+    'api.article': '文章相关API',  
 }
 ```
 
