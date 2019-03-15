@@ -73,6 +73,13 @@ class BaseHandler(View):
         return getattr(self.request, self.request.method)
 
     @property
+    def files(self):
+        """
+        Return `request.FILES`.
+        """
+        return getattr(self.request, self.request.FILES)
+
+    @property
     def ip(self):
         request = self.request
         if request.META.get('HTTP_X_FORWARDED_FOR'):
@@ -86,8 +93,9 @@ class BaseHandler(View):
         Handles responding to requests for the OPTIONS HTTP verb.
         """
         return_data = {
-            "name": "",
-            "description": "",
+            "name": self.__class__.__name__,
+            "url": self.request.path_info,
+            "description": self.__doc__,
             "renders": [
                 "application/json",
                 "text/html"
