@@ -7,6 +7,17 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from django.views import View
 from django.conf import settings
+from django.core.exceptions import DisallowedHost
+
+
+def host_is_allowed(request):
+    if '*' not in settings.DOCS_ALLOWED_HOSTS:
+        if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+            ip = request.META['HTTP_X_FORWARDED_FOR']
+        else:
+            ip = request.META['REMOTE_ADDR']
+        if ip not in settings.DOCS_ALLOWED_HOSTS:
+            raise DisallowedHost("You may need to add '%s' to DOCS_ALLOWED_HOSTS." % ip)
 
 
 class DocsView(TemplateView):
@@ -29,6 +40,8 @@ class DocsView(TemplateView):
         if settings.HIDE_API_DOCS:
             raise Http404("API Docs are hidden. Check your settings.")
 
+        host_is_allowed(request)
+
         if not request.session.get('user'):
             return redirect('/docs/login')
         context = self.get_context_data(**kwargs)
@@ -40,13 +53,15 @@ class LoginDocsView(View):
         if settings.HIDE_API_DOCS:
             raise Http404("API Docs are hidden. Check your settings.")
 
+        host_is_allowed(request)
+
         return render(request, 'docs/login.html')
 
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username == 'admin' and password == 'admin':
-            request.session['user'] = 'admin'
+        if username == settings.DOCS_USERNAME and password == settings.DOCS_PASSWORD:
+            request.session['user'] = settings.DOCS_USERNAME
             return redirect('/docs')
         return render(request, 'docs/login.html', {'error': 'Incorrect username or password.'})
 

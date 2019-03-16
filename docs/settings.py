@@ -19,3 +19,12 @@ DEFAULT_HEADERS = []
 
 # 全局params参数
 DEFAULT_PARAMS = []
+
+# 文档管理员账号
+DOCS_USERNAME = 'admin'
+
+# 文档管理员密码
+DOCS_PASSWORD = 'admin'
+
+# 允许访问的主机
+DOCS_ALLOWED_HOSTS = ["*"]
