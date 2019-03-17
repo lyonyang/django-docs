@@ -13,7 +13,7 @@ class ArticleList(BaseHandler):
         articles = Article.objects.all().order_by('create_time')
         data = []
         for article in articles:
-            data.append(article.serializ)
+            data.append(article.data())
         return self.write({'return_code': CODE.SUCCESS, 'return_data': data})
 
 class ArticleAdd(BaseHandler):

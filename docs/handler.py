@@ -9,6 +9,7 @@ from django.views import View
 from django.shortcuts import HttpResponse
 from django.utils.encoding import force_str
 from django.core.serializers.json import DjangoJSONEncoder
+from django.http import QueryDict
 
 
 class Response(HttpResponse):
@@ -70,7 +71,11 @@ class BaseHandler(View):
         """
         Return `request.METHOD`.
         """
-        return getattr(self.request, self.request.method)
+        if hasattr(self.request, self.request.method):
+            data = getattr(self.request, self.request.method)
+        else:
+            data = QueryDict(self.request.body)
+        return data
 
     @property
     def files(self):
