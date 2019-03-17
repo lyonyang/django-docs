@@ -20,8 +20,7 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
 ## 使用手册
 
-
-
+- [1 - 快速开始](https://github.com/lyonyang/django-api-docs/blob/master/document/1%20-%20Quickstart.md)
 
 ## 支持与建议
 
