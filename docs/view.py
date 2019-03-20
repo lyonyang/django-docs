@@ -12,7 +12,7 @@ from django.core.exceptions import DisallowedHost
 
 def host_is_allowed(request):
     if '*' not in settings.DOCS_ALLOWED_HOSTS:
-        if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+        if request.META.get('HTTP_X_FORWARDED_FOR'):
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
