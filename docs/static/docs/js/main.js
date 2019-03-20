@@ -255,10 +255,24 @@ String.prototype.format = function (args) {
 // 获取Json对象
 function getJsonParams(array) {
     var json_str = "{";
+    var flag = true;
     $.each(array, function (i, v) {
-
         var key = $(v).attr("id");
         var value = $(v).val();
+        var spanLength = $(v).parent().next().children().length;
+        if (spanLength >= 2) {
+            if (value == "" || value == null || value == undefined) {
+                if (spanLength == 2) {
+                    $(v).parent().next().append('<span class="label label-danger label-required">必填</span>')
+                }
+                flag = false;
+                return false
+            } else {
+                if (spanLength == 3) {
+                    $(v).parent().next().children().last().remove()
+                }
+            }
+        }
         if ($(v).attr('type') == 'file') {
             value = $(v)[0].files[0];
             return true
@@ -270,10 +284,16 @@ function getJsonParams(array) {
             json_str += ','
         }
     });
+    if (flag == false) {
+        return false
+    }
+
+    if (json_str.charAt(json_str.length - 1) == ',') {
+        json_str = json_str.substr(0, json_str.length - 1)
+    }
     json_str += "}";
     return JSON.parse(json_str)
 }
-
 
 function ajaxSuccess(data, textStatus, xhr) {
 
@@ -358,6 +378,9 @@ function sendRequest(b) {
     var uploadFile = bodyEle.find("#requestParams input[type=file]");
     if (uploadFile.length == 0) {
         requestParams = getJsonParams(params);
+        if (requestParams == false) {
+            return
+        }
     } else {
         $("#requestForm").attr("enctype", "multipart/form-data");
         processDataBool = false;
@@ -369,6 +392,20 @@ function sendRequest(b) {
             if ($(v).attr('type') == 'file') {
                 value = $(v)[0].files[0];
             }
+            var spanLength = $(v).parent().next().children().length;
+            if (spanLength >= 2) {
+                if (value == "" || value == null || value == undefined) {
+                    if (spanLength == 2) {
+                        $(v).parent().next().append('<span class="label label-danger label-required">必填</span>')
+                    }
+                    return false
+                } else {
+                    if (spanLength == 3) {
+                        $(v).parent().next().children().last().remove()
+                    }
+                }
+            }
+
             requestParams.append(key, value)
         });
     }
