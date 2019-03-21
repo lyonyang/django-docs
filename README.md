@@ -17,9 +17,9 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 **示例**
 
 
-<video id="video" controls="" controls autoplay="autoplay" poster="https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/demo.png">
+{{ <video id="video" controls="" controls autoplay="autoplay" poster="https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/demo.png">
       <source id="mp4" src="https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/demo.mov" type="video/mp4">
-&lt;/video>
+<video> }}
 
 
 ## 快速开始
