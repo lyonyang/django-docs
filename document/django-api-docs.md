@@ -25,7 +25,7 @@ GET 请求方式
 Header
 |字段名 | 必填 | 类型 | 示例值 | 描述 |
 | - | - | - | - | - |
-authorization | False | str |  | Token |
+|authorization | False | str |  | Token |
 
 
 请求示例:
