@@ -155,5 +155,5 @@ class MarkdownView(View):
         content = summary + content
         response = FileResponse(content)
         response['Content-Type'] = 'application/octet-stream'
-        response['Content-Disposition'] = 'attachment;filename="webapi.md"'
+        response['Content-Disposition'] = 'attachment;filename="django-api-docs.md"'
         return response
