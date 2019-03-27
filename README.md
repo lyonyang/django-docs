@@ -4,6 +4,20 @@
 ![python-version](https://img.shields.io/badge/python-3.4%2C%203.5%2C%203.6-blue.svg)
 ![django-api-docs](https://img.shields.io/badge/django--api--docs-0.1.0-blue.svg)
 
+<!-- TOC -->
+
+- [django-api-docs](#django-api-docs)
+  - [简介](#简介)
+  - [快速开始](#快速开始)
+    - [安装](安装)
+    - [创建项目](#创建项目)
+    - [添加Docs应用](#添加Docs应用)
+    - [编写API](#编写API)
+  - [用户指南](#用户指南)
+  - [支持与建议](#支持与建议)
+
+<!-- /TOC -->
+
 ## 简介
 
 django-api-docs 是一个用于构建Web API的工具:palm_tree:
@@ -16,7 +30,7 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
 本工具页面样式来源于 [django-rest-framework-docs](https://www.drfdocs.com/)
 
-## 优点
+**优点**
 
 1. 自动注册路由
 2. 自动构建Web API文档
@@ -265,6 +279,19 @@ class ArticleAdd(BaseHandler):
 ![request](https://raw.githubusercontent.com/lyonyang/django-api-docs/master/asset/request.png)
 
 两个 API 编写完毕 , 是不是很简单呢 ~
+
+## 用户指南
+
+这部分内容为该工具的实现说明 , 包括路由 , 处理器(视图) , 响应 , 认证 , 配置 , 文档
+
+避免 `README` 中篇幅过长 , 你可以通过以下目录查看(仅部分完成)
+
+1. [路由](https://github.com/lyonyang/django-api-docs/blob/master/document/2%20-%20Router.md)
+2. [处理器](https://github.com/lyonyang/django-api-docs/blob/master/document/3%20-%20Handler.md)
+3. [响应](https://github.com/lyonyang/django-api-docs/blob/master/document/4%20-%20Response.md)
+4. [认证](https://github.com/lyonyang/django-api-docs/blob/master/document/5%20-%20Authentication.md)
+5. [配置](https://github.com/lyonyang/django-api-docs/blob/master/document/6%20-%20Settings.md)
+6. [文档](https://github.com/lyonyang/django-api-docs/blob/master/document/7%20-%20Document.md)
 
 ## 支持与建议
 
