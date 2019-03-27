@@ -126,13 +126,13 @@ class MarkdownView(View):
                         headers = []
                     else:
                         headers.append('\n')
-                        headers.insert(1, 'Header\n')
+                        headers.insert(1, 'Header\n\n')
                         headers = ''.join(headers)
 
                     if len(params) == 1:
                         params = []
                     else:
-                        params.insert(0, 'Body\n')
+                        params.insert(0, 'Body\n\n')
 
                     params.append('\n')
                     params = ''.join(params)
