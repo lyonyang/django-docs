@@ -9,6 +9,7 @@ from django.views import View
 from django.shortcuts import HttpResponse
 from django.utils.encoding import force_str
 from django.core.serializers.json import DjangoJSONEncoder
+from django.http import QueryDict
 
 
 class Response(HttpResponse):
@@ -70,7 +71,18 @@ class BaseHandler(View):
         """
         Return `request.METHOD`.
         """
-        return getattr(self.request, self.request.method)
+        if hasattr(self.request, self.request.method):
+            data = getattr(self.request, self.request.method)
+        else:
+            data = QueryDict(self.request.body)
+        return data
+
+    @property
+    def files(self):
+        """
+        Return `request.FILES`.
+        """
+        return getattr(self.request, self.request.FILES)
 
     @property
     def ip(self):
@@ -86,8 +98,9 @@ class BaseHandler(View):
         Handles responding to requests for the OPTIONS HTTP verb.
         """
         return_data = {
-            "name": "",
-            "description": "",
+            "name": self.__class__.__name__,
+            "url": self.request.path_info,
+            "description": self.__doc__,
             "renders": [
                 "application/json",
                 "text/html"

@@ -129,6 +129,10 @@ INSTALLED_HANDLERS = [
     'api.handler.article',
 ]
 
+INSTALLED_HANDLERS_NAME = {
+    'api.handler.article': '文章相关API'
+}
+
 DEFAULT_HEADERS = [
     ('authorization', False, 'str', '', 'Token'),
 ]

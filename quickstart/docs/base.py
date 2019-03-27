@@ -18,8 +18,9 @@ class ApiEndpoint(object):
         # callback为view, 由as_view return
         self.callback = pattern.callback
         # self.name = pattern.name
-        self.docstring = self.get_doc() or desc
-        self.name_parent = name_parent.split('.')[-1]
+        self.docstring = self.get_doc()
+        self.desc = desc
+        self.name_parent = name_parent.split('.')[-1].title()
 
         if not isinstance(settings.INSTALLED_HANDLERS_NAME, dict):
             raise TypeError(_(

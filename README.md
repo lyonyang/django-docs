@@ -10,9 +10,19 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 
 在 Django 中, 最有名气的 RESTful 工具应该就是 `django-rest-framework` 了, 我曾经也用过一段时间 , 但是渐渐的 , 我发现它让我的工作变得越来越复杂 , 整个项目看起来是那么的乱 , API 不应该太过于遵循 REST 规范 , `Serializer` 局限性太大了 , `Authentication` 必须得有那么一个 User 让我真是纳闷 , 构建 Web API 更是让人感到鸡肋 …… 
 
-基于种种的原因 , 我实在是不想再用它了 , 当然它的技术层次还是很棒的 , 可能由于作者是国外的 , 也许国外编写 API 的方式和国内太不一样
+基于种种原因 , 我实在是不想再用它了 , 当然它的技术层次还是很棒的
 
-在写这个工具之前 , 我其实已经完成了一半 , 用在了我公司的项目中 , 不过那时并没有完全抛弃 `django-rest-framwork` , 而是两者掺半 , 到现在完全剔除并更进一步的优化 , 成为了这个 `django-api-docs` 
+所以, 为了让编写 `API` 变得更加简单, 高效, 易于管理, 就有了 `django-api-docs` 这个工具
+
+本工具页面样式来源于 [django-rest-framework-docs](https://www.drfdocs.com/)
+
+## 优点
+
+1. 自动注册路由
+2. 自动生成Web API文档
+3. 可生成Markdown格式的 API 文档
+4. 基于Django, 符合使用习惯
+5. 灵活性高, 可自行扩展
 
 **示例**
 

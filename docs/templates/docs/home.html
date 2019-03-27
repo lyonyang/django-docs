@@ -3,6 +3,9 @@
 
 {% block apps_menu %}
     {% regroup endpoints by name_parent as endpoints_grouped %}
+    <li>
+        <a href="/docs/markdown/" style="cursor:pointer;">Markdown</a>
+    </li>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
            aria-expanded="false">Jump To<span class="caret"></span></a>
@@ -13,6 +16,7 @@
             {% endfor %}
         </ul>
     </li>
+
     <li>
         <a href="#" style="cursor:pointer;" data-toggle="modal" data-target="#tokenModal">Token</a>
     </li>
@@ -43,7 +47,7 @@
     {% if endpoints_grouped %}
         {% for group in endpoints_grouped %}
             <h1 id="{{ group.grouper|lower }}-group"><a
-                    href="#{{ group.grouper|lower }}-group">{{ group.grouper|title }}</a>
+                    href="#{{ group.grouper|lower }}-group">{{ group.grouper }}</a>
             </h1>
 
             <div class="panel-group" role="tablist">
@@ -51,12 +55,11 @@
                 {% for endpoint in group.list %}
                     <div class="panel panel-default endpoint">
 
-                        <div class="panel-heading" role="tab"
-                        >
+                        <div class="panel-heading" role="tab" onclick="showPanelBody(this)">
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4 class="panel-title title" id="requestUrl"><i
-                                            class="fa fa-link"></i><span>{{ endpoint.path }}</span>&nbsp;&nbsp;{{ endpoint.docstring }}
+                                            class="fa fa-link"></i><span>{{ endpoint.path }}</span>&nbsp;&nbsp;{{ endpoint.desc }}
                                     </h4>
                                 </div>
 
@@ -73,6 +76,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="{{ endpoint.name }}" class="panel-collapse collapse" role="tabpanel"
+                             aria-expanded="true"
+                             style="">
+                            <div class="panel-body">
+                                <p class="lead"></p>
+                                {% if endpoint.docstring %}
+                                    <p>{{ endpoint.docstring }}</p>
+                                {% else %}
+                                    <p>No more information.</p>
+                                {% endif %}
+
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
 
@@ -84,7 +101,7 @@
         <div class="right-summary">
             <ul>
                 {% for group in endpoints_grouped %}
-                    <li><a href="#{{ group.grouper|lower }}-group">{{ group.grouper|title }}</a></li>
+                    <li><a href="#{{ group.grouper|lower }}-group">{{ group.grouper }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -225,8 +242,8 @@
     </a>
     <script src="{% static 'docs/js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'docs/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'docs/js/main.min.js' %}"></script>
-    <!-- <script src="{% static 'docs/js/main.js' %}"></script> -->
+    <!-- <script src="{% static 'docs/js/main.min.js' %}"></script> -->
+    <script src="{% static 'docs/js/main.js' %}"></script>
     <script>
         // 锚点
         $("a[href*=\\#]:not([href=\\#])").click(function () {

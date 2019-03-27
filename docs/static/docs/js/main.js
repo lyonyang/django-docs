@@ -428,3 +428,12 @@ function sendRequest(b) {
         }
     })
 }
+
+function showPanelBody(b) {
+    var bodyEle = $(b).next();
+    if (bodyEle.hasClass('in') == false) {
+        bodyEle.addClass('in');
+    } else {
+        bodyEle.removeClass('in')
+    }
+}
