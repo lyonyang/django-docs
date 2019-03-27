@@ -62,11 +62,13 @@ POST 请求方式
 
 
 Header
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 authorization | False | str |  | Token |
 
 Body
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 title | True | str | API Docs | 标题 |
@@ -91,11 +93,13 @@ POST 请求方式
 
 
 Header
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 authorization | False | str |  | Token |
 
 Body
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 article_id | True | int | 1 | 文章ID |
@@ -118,11 +122,13 @@ POST 请求方式
 
 
 Header
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 authorization | False | str |  | Token |
 
 Body
+
 字段名 | 必填 | 类型 | 示例值 | 描述
 :-: | :-: | :-: | :-: | :-:
 article_id | True | int | 1 | 文章ID |
