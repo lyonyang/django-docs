@@ -37,6 +37,7 @@ django-api-docs 是一个用于构建Web API的工具:palm_tree:
 3. 可生成Markdown格式的 API 文档 , [示例](https://github.com/lyonyang/django-api-docs/blob/master/document/django-api-docs.md)
 4. 基于Django, 符合使用习惯
 5. 灵活性高, 可自行扩展
+6. 编写API更高效, 更方便
 
 **示例**
 
