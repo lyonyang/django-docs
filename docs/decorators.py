@@ -64,16 +64,46 @@ def api_define(name, url, params=None, headers=None, desc='',
     return decorator
 
 
-def login_required(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
+def login_required(handler):
+    @wraps(handler)
+    def _wrapped_view(self, *args, **kwargs):
         """
         :param self: BaseHandler Object
         :param args:
         :param kwargs:
         :return:
         """
-        # TODO 登录校验
-        return method(self, *args, **kwargs)
+        # TODO 认证
+        return handler(self, *args, **kwargs)
 
-    return wrapper
+    return _wrapped_view
+
+
+def permission_required(handler):
+    @wraps(handler)
+    def _wrapped_view(self, *args, **kwargs):
+        """
+        :param self: BaseHandler Object
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # TODO 权限
+        return handler(self, *args, **kwargs)
+
+    return _wrapped_view
+
+
+def throttle_required(handler):
+    @wraps(handler)
+    def _wrapped_view(self, *args, **kwargs):
+        """
+        :param self: BaseHandler Object
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # TODO 限流
+        return handler(self, *args, **kwargs)
+
+    return _wrapped_view

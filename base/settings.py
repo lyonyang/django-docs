@@ -127,12 +127,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 INSTALLED_HANDLERS = [
     'api.handler.article',
+    'api.handler.user',
 ]
 
 INSTALLED_HANDLERS_NAME = {
-    'api.handler.article': '文章相关API'
+    'api.handler.article': '文章相关API',
+    'api.handler.user': '用户相关API',
 }
 
 DEFAULT_HEADERS = [
     ('authorization', False, 'str', '', 'Token'),
 ]
+
+JWT_SECRET_KEY = '%y++)l0mu*_a0ldu8s%cdjr+7v!#xh2lw%7e$-@kh+tmfy!-i8'

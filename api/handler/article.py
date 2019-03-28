@@ -5,16 +5,19 @@
 from docs import Param, BaseHandler, api_define
 from apps.articles.models import Article
 from api.status import CODE, MSG
+from api.decorators import login_required
 
 
 class ArticleList(BaseHandler):
     @api_define('article_list', '/article/list', desc='文章列表')
+    @login_required
     def get(self, request):
         articles = Article.objects.all().order_by('create_time')
         data = []
         for article in articles:
             data.append(article.data())
         return self.write({'return_code': CODE.SUCCESS, 'return_data': data})
+
 
 class ArticleAdd(BaseHandler):
     @api_define('article_add', '/article/add', [

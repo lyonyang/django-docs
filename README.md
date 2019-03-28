@@ -293,6 +293,8 @@ class ArticleAdd(BaseHandler):
 4. [认证](https://github.com/lyonyang/django-api-docs/blob/master/document/5%20-%20Authentication.md)
 5. [配置](https://github.com/lyonyang/django-api-docs/blob/master/document/6%20-%20Settings.md)
 6. [文档](https://github.com/lyonyang/django-api-docs/blob/master/document/7%20-%20Document.md)
+7. [部署](https://github.com/lyonyang/django-api-docs/blob/master/document/8%20-%20Deploy.md)
+
 
 ## 支持与建议
 
