@@ -22,7 +22,7 @@ class SessionLogin(BaseHandler):
 
 
 class JwtLogin(BaseHandler):
-    @api_define('session_login', '/session/login', [
+    @api_define('jwt_login', '/jwt/login', [
         ('username', True, 'str', 'admin', '用户名'),
         ('password', True, 'str', 'admin', '密码'),
     ], desc='用户登录 Jwt存储')

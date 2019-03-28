@@ -44,7 +44,7 @@ class DocsView(TemplateView):
 
         host_is_allowed(request)
 
-        if not request.session.get('user'):
+        if not request.session.get('docs_user'):
             return redirect('/docs/login')
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
