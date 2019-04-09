@@ -44,7 +44,7 @@ class DocsView(TemplateView):
 
         host_is_allowed(request)
 
-        if not request.session.get('user'):
+        if not request.session.get('docs_user'):
             return redirect('/docs/login')
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
@@ -63,15 +63,15 @@ class LoginDocsView(View):
         username = request.POST.get('username')
         password = request.POST.get('password')
         if username == settings.DOCS_USERNAME and password == settings.DOCS_PASSWORD:
-            request.session['user'] = settings.DOCS_USERNAME
+            request.session['docs_user'] = settings.DOCS_USERNAME
             return redirect('/docs')
         return render(request, 'docs/login.html', {'error': 'Incorrect username or password.'})
 
 
 class LogoutDocsView(View):
     def get(self, request):
-        if request.session.get('user'):
-            del request.session['user']
+        if request.session.get('docs_user'):
+            del request.session['docs_user']
         return redirect("/docs/login/")
 
 

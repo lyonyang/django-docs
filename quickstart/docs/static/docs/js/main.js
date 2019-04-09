@@ -430,7 +430,7 @@ function sendRequest(b) {
 }
 
 function showPanelBody(b) {
-    var bodyEle = $(b).next();
+    var bodyEle = $(b).parent().parent().next();
     if (bodyEle.hasClass('in') == false) {
         bodyEle.addClass('in');
     } else {

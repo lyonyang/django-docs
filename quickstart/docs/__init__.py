@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 # __author__ = "lyon"
 
-
 __title__ = 'django-api-docs'
 __version__ = '1.0.0'
 __author__ = 'Lyon'
