@@ -57,8 +57,7 @@
 
                         <div class="panel-heading" role="tab">
                             <div class="row">
-                                <div class="col-md-{{ 12|add:-endpoint.allowed_methods|length }}"
-                                     onclick="showPanelBody(this)">
+                                <div class="col-md-{{ endpoint.template_title_length }}" onclick="showPanelBody(this)">
                                     <h4 class="panel-title title" id="requestUrl"><i
                                             class="fa fa-link"></i><span>{{ endpoint.path }}</span>&nbsp;&nbsp;{{ endpoint.desc }}
                                         {% if end.docstring %}
@@ -71,7 +70,7 @@
                                     </h4>
                                 </div>
 
-                                <div class="col-md-{{ endpoint.allowed_methods|length }}">
+                                <div class="col-md-{{ endpoint.template_method_length }}">
                                     <ul class="list-inline methods">
                                         {% for method in endpoint.allowed_methods %}
                                             <li class="method {{ method|lower }}" data-toggle="modal"
@@ -91,7 +90,9 @@
                             <div class="panel-body">
                                 <p class="lead"></p>
                                 {% if endpoint.docstring %}
-                                    <p>{{ endpoint.docstring }}</p>
+                                    <p>
+                                        {{ endpoint.docstring }}
+                                    </p>
                                 {% else %}
                                     <p>No more information.</p>
                                 {% endif %}

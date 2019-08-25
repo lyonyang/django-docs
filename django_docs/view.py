@@ -4,31 +4,58 @@
 
 import requests
 import json
+import functools
 from django.http import Http404
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from django.views import View
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
+from django.urls import reverse
+from . import default, router
 
 
-def host_is_allowed(request):
-    if '*' not in settings.DOCS_ALLOWED_HOSTS:
-        if request.META.get('HTTP_X_FORWARDED_FOR'):
-            ip = request.META['HTTP_X_FORWARDED_FOR']
+def allowed_host(func):
+    def docs_view(self, request, *args, **kwargs):
+        if hasattr(settings, 'DJANGO_DOCS_ALLOWED_HOST'):
+            if '*' not in settings.DJANGO_DOCS_ALLOWED_HOST:
+                if request.META.get('HTTP_X_FORWARDED_FOR'):
+                    ip = request.META['HTTP_X_FORWARDED_FOR']
+                else:
+                    ip = request.META['REMOTE_ADDR']
+                if ip not in settings.DJANGO_DOCS_ALLOWED_HOST:
+                    raise DisallowedHost("You may need to add '%s' to DOCS_ALLOWED_HOSTS." % ip)
+        return func(self, request, *args, **kwargs)
+
+    return docs_view
+
+
+def hide_check(func):
+    @functools.wraps(func)
+    def docs_view(*args, **kwargs):
+        if hasattr(settings, 'DJANGO_DOCS_HIDE'):
+            if settings.DJANGO_DOCS_HIDE:
+                if settings.DEBUG:
+                    raise Http404('API Docs are hidden. Check your settings.')
+                raise Http404
         else:
-            ip = request.META['REMOTE_ADDR']
-        if ip not in settings.DOCS_ALLOWED_HOSTS:
-            raise DisallowedHost("You may need to add '%s' to DOCS_ALLOWED_HOSTS." % ip)
+            if default.DJANGO_DOCS_HIDE:
+                if settings.DEBUG:
+                    raise Http404('API Docs are hidden. Check your settings.')
+                raise Http404
+        return func(*args, **kwargs)
+
+    return docs_view
 
 
 class DocsView(TemplateView):
-    template_name = "django_docs/home.html"
+    template_name = 'django_docs/home.html'
 
     def get_context_data(self, **kwargs):
-        from .routers import router
+        from . import router
         context = super(DocsView, self).get_context_data(**kwargs)
         endpoints = router.endpoints
+        print(endpoints)
 
         query = self.request.GET.get("search", "")
         if query and endpoints:
@@ -38,33 +65,31 @@ class DocsView(TemplateView):
         context['endpoints'] = endpoints
         return context
 
+    @hide_check
+    @allowed_host
     def get(self, request, *args, **kwargs):
-        if settings.HIDE_API_DOCS:
-            raise Http404("API Docs are hidden. Check your settings.")
-
-        host_is_allowed(request)
-
         if not request.session.get('docs_user'):
-            return redirect('/django_docs/login')
+            return redirect(reverse('django_docs_login'))
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
 
 class LoginDocsView(View):
+    @hide_check
+    @allowed_host
     def get(self, request):
-        if settings.HIDE_API_DOCS:
-            raise Http404("API Docs are hidden. Check your settings.")
-
-        host_is_allowed(request)
-
         return render(request, 'django_docs/login.html')
 
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username == settings.DOCS_USERNAME and password == settings.DOCS_PASSWORD:
-            request.session['docs_user'] = settings.DOCS_USERNAME
-            return redirect('/docs')
+        if hasattr(settings, 'DJANGO_DOCS_USERNAME') and hasattr(settings, 'DJANGO_DOCS_PASSWORD'):
+            if username == settings.DJANGO_DOCS_USERNAME and password == settings.DJANGO_DOCS_PASSWORD:
+                request.session['docs_user'] = settings.DJANGO_DOCS_USERNAME
+                return redirect(reverse('django_docs_index'))
+        else:
+            request.session['docs_user'] = default.DJANGO_DOCS_USERNAME
+            return redirect(reverse('django_docs_index'))
         return render(request, 'django_docs/login.html', {'error': 'Incorrect username or password.'})
 
 
@@ -78,7 +103,6 @@ class LogoutDocsView(View):
 class MarkdownView(View):
     def get(self, request):
         from django.http import FileResponse
-        from .routers import router
 
         endpoints = {}
         for endpoint in router.endpoints:
