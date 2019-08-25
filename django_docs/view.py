@@ -55,7 +55,6 @@ class DocsView(TemplateView):
         from . import router
         context = super(DocsView, self).get_context_data(**kwargs)
         endpoints = router.endpoints
-        print(endpoints)
 
         query = self.request.GET.get("search", "")
         if query and endpoints:
@@ -97,7 +96,7 @@ class LogoutDocsView(View):
     def get(self, request):
         if request.session.get('docs_user'):
             del request.session['docs_user']
-        return redirect("/docs/login/")
+        return redirect(reverse('django_docs_login'))
 
 
 class MarkdownView(View):

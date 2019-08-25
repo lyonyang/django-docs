@@ -5,7 +5,6 @@
 __title__ = 'Django API Docs'
 __version__ = '1.1.0'
 __author__ = 'Lyon Yang'
-__license__ = 'BSD 2-Clause'
 
 VERSION = __version__
 
@@ -178,6 +177,8 @@ class Param(dict):
         super(dict, self).__init__()
         self['field_name'] = field_name
         self['required'] = required
+        if not isinstance(param_type, str):
+            param_type = param_type.__name__
         self['param_type'] = param_type
         self['default'] = default
         self['description'] = description
@@ -243,8 +244,7 @@ class Router(object):
                                             name_parent=module, desc=desc)
                         if method != "OPTIONS":
                             endpoint.methods.append("OPTIONS")
-                            endpoint.params["OPTIONS"], endpoint.headers[
-                                "OPTIONS"] = settings.DJANGO_DOCS_GLOBAL_PARAMS, settings.DJANGO_DOCS_GLOBAL_HEADERS
+                            endpoint.params["OPTIONS"], endpoint.headers["OPTIONS"] = [], []
                         self.endpoints.append(endpoint)
         return urlpatterns
 
