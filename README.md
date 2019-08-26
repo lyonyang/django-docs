@@ -11,7 +11,7 @@
 $ pip install django-apidocs
 ```
 
-## 配置
+## 快速开始
 
 在 `settings.py` , `INSTALLED_APPS` 添加 `django_docs`
 
@@ -28,7 +28,11 @@ INSTALLED_APPS = [
 url(r'^django_docs/', include('django_docs.urls')),
 ```
 
-## 使用
+启动项目, 访问 `ip:port/django_docs/login/` , 输入任意用户名密码登录
+
+## 编写API
+
+新建目录与文件 `api/article.py` 
 
 
 使用原始的 `View` 与 `JsonResponse`
@@ -37,7 +41,6 @@ url(r'^django_docs/', include('django_docs.urls')),
 from django_docs import docs_define
 from django.views import View
 from django.http import JsonResponse
-
 
 class ArticleList(View):
     @docs_define('/article/list', desc='文章列表')
@@ -63,7 +66,6 @@ class ArticleList(View):
 ```python
 from django_docs import docs_define, BaseHandler
 
-
 class ArticleList(BaseHandler):
     @docs_define('/article/list', desc='文章列表')
     def get(self, request):
@@ -83,5 +85,15 @@ class ArticleList(BaseHandler):
         return self.write(data)
 ```
 
-启动项目, 访问 `ip:port/django_docs/login/`, 输入任意用户名密码登录
+注册 `article.py` 
+
+```python
+# settings.py
+
+INSTALLED_HANDLERS = [
+    'api.article', 
+]
+```
+
+刷新文档
 
