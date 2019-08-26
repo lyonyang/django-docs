@@ -12,19 +12,19 @@ from django.views import View
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.urls import reverse
-from . import default, router
+from django.http import FileResponse
+from . import router
 
 
 def allowed_host(func):
     def docs_view(self, request, *args, **kwargs):
-        if hasattr(settings, 'DJANGO_DOCS_ALLOWED_HOST'):
-            if '*' not in settings.DJANGO_DOCS_ALLOWED_HOST:
-                if request.META.get('HTTP_X_FORWARDED_FOR'):
-                    ip = request.META['HTTP_X_FORWARDED_FOR']
-                else:
-                    ip = request.META['REMOTE_ADDR']
-                if ip not in settings.DJANGO_DOCS_ALLOWED_HOST:
-                    raise DisallowedHost("You may need to add '%s' to DOCS_ALLOWED_HOSTS." % ip)
+        if '*' not in settings.DJANGO_DOCS_ALLOWED_HOST:
+            if request.META.get('HTTP_X_FORWARDED_FOR'):
+                ip = request.META['HTTP_X_FORWARDED_FOR']
+            else:
+                ip = request.META['REMOTE_ADDR']
+            if ip not in settings.DJANGO_DOCS_ALLOWED_HOST:
+                raise DisallowedHost("You may need to add '%s' to DOCS_ALLOWED_HOSTS." % ip)
         return func(self, request, *args, **kwargs)
 
     return docs_view
@@ -33,16 +33,10 @@ def allowed_host(func):
 def hide_check(func):
     @functools.wraps(func)
     def docs_view(*args, **kwargs):
-        if hasattr(settings, 'DJANGO_DOCS_HIDE'):
-            if settings.DJANGO_DOCS_HIDE:
-                if settings.DEBUG:
-                    raise Http404('API Docs are hidden. Check your settings.')
-                raise Http404
-        else:
-            if default.DJANGO_DOCS_HIDE:
-                if settings.DEBUG:
-                    raise Http404('API Docs are hidden. Check your settings.')
-                raise Http404
+        if settings.DJANGO_DOCS_HIDE:
+            if settings.DEBUG:
+                raise Http404('API Docs are hidden. Check your settings.')
+            raise Http404
         return func(*args, **kwargs)
 
     return docs_view
@@ -52,7 +46,6 @@ class DocsView(TemplateView):
     template_name = 'django_docs/home.html'
 
     def get_context_data(self, **kwargs):
-        from . import router
         context = super(DocsView, self).get_context_data(**kwargs)
         endpoints = router.endpoints
 
@@ -82,12 +75,12 @@ class LoginDocsView(View):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if hasattr(settings, 'DJANGO_DOCS_USERNAME') and hasattr(settings, 'DJANGO_DOCS_PASSWORD'):
+        if settings.DJANGO_DOCS_PASSWORD:
             if username == settings.DJANGO_DOCS_USERNAME and password == settings.DJANGO_DOCS_PASSWORD:
                 request.session['docs_user'] = settings.DJANGO_DOCS_USERNAME
                 return redirect(reverse('django_docs_index'))
         else:
-            request.session['docs_user'] = default.DJANGO_DOCS_USERNAME
+            request.session['docs_user'] = settings.DJANGO_DOCS_USERNAME
             return redirect(reverse('django_docs_index'))
         return render(request, 'django_docs/login.html', {'error': 'Incorrect username or password.'})
 
@@ -101,7 +94,6 @@ class LogoutDocsView(View):
 
 class MarkdownView(View):
     def get(self, request):
-        from django.http import FileResponse
 
         endpoints = {}
         for endpoint in router.endpoints:
@@ -143,15 +135,13 @@ class MarkdownView(View):
                             '%s | %s | %s | %s | %s |\n' % (
                                 p.kwargs['field_name'], p.kwargs['required'], p.kwargs['param_type'],
                                 p.kwargs['default'], p.kwargs['description']))
-                        request_params[h.kwargs['field_name']] = h.kwargs['default']
-
+                        request_params[p.kwargs['field_name']] = p.kwargs['default']
                     if len(headers) == 2:
                         headers = []
                     else:
                         headers.append('\n')
                         headers.insert(1, 'Header\n\n')
-                        headers = ''.join(headers)
-
+                    headers = ''.join(headers)
                     if len(params) == 1:
                         params = []
                     else:

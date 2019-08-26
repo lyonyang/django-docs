@@ -7,7 +7,7 @@
 
 ## 安装
 
-```bash
+```shell
 $ pip install django-apidocs
 ```
 
