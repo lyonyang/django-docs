@@ -3,7 +3,7 @@
 # __author__ = "lyon"
 
 __title__ = 'Django API Docs'
-__version__ = '1.1.0'
+__version__ = '2.1.0'
 __author__ = 'Lyon Yang'
 
 VERSION = __version__
@@ -15,10 +15,11 @@ import six
 import inspect
 import json
 import functools
+from django.conf import settings
+from django.conf.urls import url
 from importlib import import_module
 from django.utils.encoding import force_str
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 from django.contrib.admindocs.views import simplify_regex
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
@@ -125,7 +126,8 @@ class Endpoint(object):
     @property
     def allowed_methods(self):
         methods = []
-        for m in self.callback.cls.force_http_method_names():
+        http_method_names = self.callback.view_class.http_method_names
+        for m in [force_str(m).upper() for m in http_method_names]:
             if m in self.methods:
                 methods.append(m)
         return methods
@@ -157,7 +159,10 @@ class Endpoint(object):
         return simplify_regex(self.pattern.regex.pattern)
 
     def get_doc(self):
-        return mark_safe(inspect.getdoc(self.callback).replace('\n', '<br>').replace(' ', '&nbsp;'))
+        meta_doc = inspect.getdoc(self.callback)
+        if meta_doc:
+            return mark_safe(meta_doc.replace('\n', '<br>').replace(' ', '&nbsp;'))
+        return meta_doc
 
 
 class Param(dict):
@@ -210,7 +215,6 @@ class Router(object):
         """
         Return a list of URL patterns, given the registered apis.
         """
-        from django.conf.urls import url
 
         for api in settings.INSTALLED_HANDLERS:
             import_string(api + '.__name__')

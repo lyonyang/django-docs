@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 import json
 from django.views import View
 from django.shortcuts import HttpResponse
-from django.utils.encoding import force_str
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import QueryDict
 
@@ -44,27 +43,14 @@ class BaseHandler(View):
         Set `cls' to use `allowed_methods' when building documents.
         """
         view = super(BaseHandler, cls).as_view(**initkwargs)
-        view.cls = cls
-        view.initkwargs = initkwargs
+        view.view_class = cls
+        view.view_initkwargs = initkwargs
         return view
-
-    @property
-    def allowed_methods(self):
-        """
-        Wrap Django's private `_allowed_methods` interface in a public property.
-        """
-        return self._allowed_methods()
-
-    @classmethod
-    def force_http_method_names(cls):
-        """
-        Return upper http methods name.
-        """
-        return [force_str(m).upper() for m in cls.http_method_names]
 
     def write(self, data, status=None, content_type=None, encoder=DjangoJSONEncoder, json_dumps_params=None, **kwargs):
         # status defaults to 200
-        return Response(data=data, status=status, content_type=content_type)
+        return Response(data=data, status=status, content_type=content_type, json_dumps_params=json_dumps_params,
+                        **kwargs)
 
     @property
     def data(self):
@@ -83,15 +69,6 @@ class BaseHandler(View):
         Return `request.FILES`.
         """
         return getattr(self.request, self.request.FILES)
-
-    @property
-    def ip(self):
-        request = self.request
-        if request.META.get('HTTP_X_FORWARDED_FOR'):
-            ip = request.META['HTTP_X_FORWARDED_FOR']
-        else:
-            ip = request.META['REMOTE_ADDR']
-        return ip
 
     def options(self, request, *args, **kwargs):
         """
