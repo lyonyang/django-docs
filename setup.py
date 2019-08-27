@@ -12,7 +12,7 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 from setuptools import setup
 
-version = '2.1.0'
+version = '2.1.1'
 
 # Hack to prevent stupid TypeError: 'NoneType' object is not callable error on
 # exit of python setup.py test # in multiprocessing/util.py _exit_function when
@@ -23,8 +23,9 @@ version = '2.1.0'
 
 install_requires = ['Django', 'requests', 'six']
 
-with open('README.md') as f:
-    long_description = f.read()
+long_description = 'Django-Docs'
+# with open('README.md') as f:
+#     long_description = f.read()
 
 setup(
     name='django-apidocs',
