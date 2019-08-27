@@ -60,7 +60,7 @@
                                 <div class="col-md-{{ endpoint.template_title_length }}" onclick="showPanelBody(this)">
                                     <h4 class="panel-title title" id="requestUrl"><i
                                             class="fa fa-link"></i><span>{{ endpoint.path }}</span>&nbsp;&nbsp;{{ endpoint.desc }}
-                                        {% if end.docstring %}
+                                        {% if endpoint.docstring %}
                                             &nbsp;
                                             <img src="{% static 'django_docs/images/info.png' %}"
                                                  alt="" style="width:25px;height:25px;">
@@ -90,9 +90,7 @@
                             <div class="panel-body">
                                 <p class="lead"></p>
                                 {% if endpoint.docstring %}
-                                    <p>
-                                        {{ endpoint.docstring }}
-                                    </p>
+                                    <p style="word-break: break-all">{{ endpoint.docstring }}</p>
                                 {% else %}
                                     <p>No more information.</p>
                                 {% endif %}
