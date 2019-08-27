@@ -3,7 +3,7 @@
 # __author__ = "lyon"
 
 __title__ = 'Django API Docs'
-__version__ = '2.1.1'
+__version__ = '2.1.2'
 __author__ = 'Lyon Yang'
 
 VERSION = __version__
